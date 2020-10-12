@@ -1,18 +1,17 @@
 // Base tree generator
 // MIT
-import { Matrix } from 'pixi.js';
-import { State } from '../index';
+import { State } from "../index";
 
 export default class Tree {
   constructor({
-    root = {x: 0, y: 0},
+    root = { x: 0, y: 0 },
     angleRange = {
       min: -(Math.PI / 6),
-      max: Math.PI / 6
+      max: Math.PI / 6,
     },
-    startLenRange = [50, 200],
+    startLenRange = [100, 200],
     minBranchSize = 20,
-    branchRange = [1, 4]
+    branchRange = [1, 4],
   }) {
     this.root = root;
     this.angleRange = angleRange;
@@ -21,30 +20,29 @@ export default class Tree {
     this.branchRange = branchRange;
 
     this.tree = []; // list of "nodes": {x, y}
-    this.space = new Matrix();
-    this.space.translate(this.root.x, this.root.y);
+    this.currBase = { x1: -1, y1: -1, x2: -1, y2: -1 };
   }
 
-  _branch(len) {
-    if (len < this.minBranchSize) return;
-    const angle = randomRange(this.angleRange.min, this.angleRange.max);
+  _branch(len, prevNode = { x: 0, y: 0 }) {
+    if (len < this.minBranchSize && prevNode !== undefined) return;
 
-    // goblinesque
-    const lStart = this.space.apply({x: 0, y: 0});
-    const lEnd = this.space.apply({x: 0, y: -len});
-    this.tree.push({
-      x1: lStart.x,
-      y1: lStart.y,
-      x2: lEnd.x,
-      y2: lEnd.y
-    });
-    // TRANSLATE
-    this.space.translate(0, -len);
-    State.trStack.push({ matrix: this.space });
-    // ROTATE
-    this.space.rotate(angle);
-    this._branch(len * randomRange(0.4, 1));
-    this.space = State.trStack.pop();
+    const angle = randomRange(this.angleRange.min, this.angleRange.max);
+    const node = {
+      x1: prevNode.x,
+      y1: prevNode.y,
+      x2: prevNode.x - len * Math.sin(angle),
+      y2: prevNode.y - len * Math.cos(angle),
+    };
+    this.tree.push({ ...node });
+    this.currBase = node;
+
+    for (let i = 0; i < randomRange(1, 2); i++) {
+      State.stack.push({ item: { ...this.currBase } });
+      this._branch(len * 0.7, { x: this.currBase.x2, y: this.currBase.y2 });
+      State.stack.pop();
+      if (State.stack.top() !== undefined)
+        this.currBase = State.stack.top().item;
+    }
   }
 
   /* ====Public methods==== */
@@ -57,9 +55,9 @@ export default class Tree {
       x1: this.root.x,
       y1: this.root.y,
       x2: this.root.x,
-      y2: this.root.y
+      y2: this.root.y,
     });
-    this._branch(randomRange(minL, maxL));
+    this._branch(randomRange(minL, maxL), { x: this.root.x, y: this.root.y });
     return this.tree;
   }
 }
