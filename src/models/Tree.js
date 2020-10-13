@@ -11,37 +11,40 @@ export default class Tree {
     },
     startLenRange = [100, 200],
     minBranchSize = 20,
-    branchRange = [1, 4],
+    bRange = [1, 4],
   }) {
     this.root = root;
     this.angleRange = angleRange;
     this.startLenRange = startLenRange;
     this.minBranchSize = minBranchSize;
-    this.branchRange = branchRange;
+    this.bRange = bRange;
 
     this.tree = []; // list of "nodes": {x, y}
-    this.currBase = { x1: -1, y1: -1, x2: -1, y2: -1 };
   }
 
-  _branch(len, prevNode = { x: 0, y: 0 }) {
+  _branch(len, prevNode = { x: 0, y: 0 }, prevAngle = 0) {
     if (len < this.minBranchSize && prevNode !== undefined) return;
 
     const angle = randomRange(this.angleRange.min, this.angleRange.max);
     const node = {
       x1: prevNode.x,
       y1: prevNode.y,
-      x2: prevNode.x - len * Math.sin(angle),
-      y2: prevNode.y - len * Math.cos(angle),
+      x2: prevNode.x - len * Math.sin(angle + prevAngle),
+      y2: prevNode.y - len * Math.cos(angle + prevAngle),
     };
     this.tree.push({ ...node });
-    this.currBase = node;
+    let currBase = node;
 
-    for (let i = 0; i < randomRange(1, 2); i++) {
-      State.stack.push({ item: { ...this.currBase } });
-      this._branch(len * 0.7, { x: this.currBase.x2, y: this.currBase.y2 });
+    // TODO: ignore alrady branched nodes
+    for (let i = 0; i < randomRange(this.bRange[0], this.bRange[1]); i++) {
+      State.stack.push({ item: { ...currBase } });
+      this._branch(
+        len * randomRange(0.4, 1),
+        { x: currBase.x2, y: currBase.y2 },
+        angle
+      );
       State.stack.pop();
-      if (State.stack.top() !== undefined)
-        this.currBase = State.stack.top().item;
+      if (State.stack.top() !== undefined) currBase = State.stack.top().item;
     }
   }
 
@@ -50,6 +53,7 @@ export default class Tree {
   generate() {
     const minL = this.startLenRange[0];
     const maxL = this.startLenRange[1];
+    this.tree = [];
 
     this.tree.push({
       x1: this.root.x,

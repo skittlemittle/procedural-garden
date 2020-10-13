@@ -2,6 +2,8 @@
 
 Procedurally generated plants.
 
+---
+
 - `npm i`
 
 - `npm run build`
@@ -10,13 +12,13 @@ Procedurally generated plants.
 
 # TODO
 
-[ ] favicon
+- [ ] favicon
 
-[ ] shurub generator
+- [ ] shrub generator
 
-[ ] small plant generator
+- [ ] small plant generator
 
-[ ] particle effects
+- [ ] particle effects
 
 ## License:
 
