@@ -2,16 +2,11 @@
 // MIT
 import * as PIXI from "pixi.js";
 
-import Tree from "./models/Tree";
-import { newStack } from "./utils";
+import Tree from "./models/branching";
+import Lsystem from "./models/L-system";
 
 const WIDTH = 800;
 const HEIGHT = 700;
-
-// global state, weirdchamp :(
-export const State = {
-  stack: newStack(),
-};
 
 const app = new PIXI.Application({
   width: WIDTH,
@@ -23,18 +18,29 @@ document.body.appendChild(app.view);
 
 // render loop
 app.ticker.add(() => {
-  // kira.rotation += 0.01;
 });
 
 const graphics = new PIXI.Graphics();
-const Letree = new Tree({
+// const Letree = new Tree({
+//   root: { x: WIDTH / 2, y: HEIGHT },
+//   startLenRange: [150, 200],
+//   minBranchSize: 30,
+//   bRange: [1, 2],
+// });
+
+const Letree = new Lsystem({
+  axiom: "X",
+  rules: [
+    { condition: "F", result: "FF" },
+    { condition: "X", result: "F+[[X]-X]-F[-FX]+X" },
+  ],
   root: { x: WIDTH / 2, y: HEIGHT },
-  startLenRange: [150, 200],
-  minBranchSize: 60,
-  bRange: [1, 3],
+  startLenRange: [30, 40],
+  angle: (Math.PI / 6) // 25 degrees lol
 });
 
 document.addEventListener("keydown", () => {
+  // L.generate();
   graphics.clear();
   graphics.lineStyle(1, 0xffffff, 1);
   const branches = Letree.generate();

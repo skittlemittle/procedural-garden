@@ -1,6 +1,5 @@
 
 /* for storing translation and rotation states */
-//TODO: configuration passing
 const newStack = () => {
   const items = [];
   return {
@@ -11,4 +10,9 @@ const newStack = () => {
   }
 }
 
+function randomRange(min = 0, max = 1) {
+  return Math.random() * (max - min) + min;
+}
+
 export { newStack };
+export { randomRange };
