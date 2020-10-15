@@ -4,7 +4,6 @@ import { newStack, randomRange } from "../utils";
 
 export default class Tree {
   constructor({
-    root = { x: 0, y: 0 },
     angleRange = {
       min: -(Math.PI / 6),
       max: Math.PI / 6,
@@ -13,7 +12,6 @@ export default class Tree {
     minBranchSize = 20,
     bRange = [1, 4],
   }) {
-    this.root = root;
     this.angleRange = angleRange;
     this.startLenRange = startLenRange;
     this.minBranchSize = minBranchSize;
@@ -50,19 +48,14 @@ export default class Tree {
   }
 
   /* ====Public methods==== */
-  generate() {
+  generate(root = { x: 0, y: 0 }) {
     const minL = this.startLenRange[0];
     const maxL = this.startLenRange[1];
     this.tree = [];
     this.prevAngle = 0;
 
-    this.tree.push({
-      x1: this.root.x,
-      y1: this.root.y,
-      x2: this.root.x,
-      y2: this.root.y,
-    });
-    this._branch(randomRange(minL, maxL), { x: this.root.x, y: this.root.y });
+    this.tree.push({ x1: root.x, y1: root.y, x2: root.x, y2: root.y });
+    this._branch(randomRange(minL, maxL), { x: root.x, y: root.y });
     return this.tree;
   }
 }

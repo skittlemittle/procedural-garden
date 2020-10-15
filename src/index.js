@@ -21,28 +21,23 @@ app.ticker.add(() => {
 });
 
 const graphics = new PIXI.Graphics();
-const Letree = new Tree({
-  root: { x: WIDTH / 2, y: HEIGHT },
-  startLenRange: [150, 200],
-  minBranchSize: 20,
-  bRange: [1, 3],
-});
-
-// const Letree = new Lsystem({
-//   axiom: "X",
-//   rules: [
-//     { condition: "F", result: "FF" },
-//     { condition: "X", result: "F+[[X]-X]-F[-FX]+X" },
-//   ],
-//   root: { x: WIDTH / 2, y: HEIGHT },
-//   startLenRange: [30, 40],
-//   angle: (Math.PI / 6) // 25 degrees lol
+// const Letree = new Tree({
+//   startLenRange: [150, 200],
+//   minBranchSize: 20,
+//   bRange: [1, 3],
 // });
+
+const Letree = new Lsystem({
+  axiom: "F",
+  rules: [{ condition: "F", result: "FF+[+F-F-F]-[-F+F+F]" }],
+  startLenRange: [40, 60],
+  angle: (5 * Math.PI) / 36, // 25 degrees lol
+});
 
 document.addEventListener("keydown", () => {
   graphics.clear();
   graphics.lineStyle(1, 0xffffff, 1);
-  const branches = Letree.generate();
+  const branches = Letree.generate({ x: WIDTH / 2, y: HEIGHT });
 
   graphics.moveTo(WIDTH / 2, HEIGHT);
 

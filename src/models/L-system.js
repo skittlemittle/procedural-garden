@@ -5,7 +5,6 @@
 
   alphabet:
   F: draw forward
-  X: does nothing
   +: turn left by <angle>
   -: turn right by <angle>
   [: push
@@ -18,13 +17,11 @@ export default class Lsystem {
   constructor({
     axiom = "",
     rules = [],
-    root = { x: 0, y: 0 },
     startLenRange = [100, 200],
     angle = 0,
   }) {
     this.axiom = axiom;
     this.rules = rules;
-    this.root = root;
     this.startLenRange = startLenRange;
     this.angle = angle;
 
@@ -54,57 +51,49 @@ export default class Lsystem {
     return nextSentence;
   }
 
-  _traceBranches(sentence = "", len = 0) {
-    let prevNode = { ...this.root };
-    let currBase;
-    let node = { ...this.root };
+  //TODO: goblinesque, redo
+  _traceBranches(root, sentence = "", len = 0) {
+    let prevNode = { ...root };
+    let node, currBase;
+    let angle = 0;
     for (let i = 0; i < sentence.length; i++) {
       const curr = sentence.charAt(i);
-      //TODO: goblinesque, redo
       if (curr === "F") {
         node = {
           x1: prevNode.x,
           y1: prevNode.y,
-          x2: prevNode.x,
-          y2: prevNode.y - len,
+          x2: prevNode.x - len * Math.sin(angle),
+          y2: prevNode.y - len * Math.cos(angle),
         };
+        this.tree.push({ ...node });
         currBase = { ...node };
       } else if (curr === "+") {
-        node = {
-          x1: prevNode.x,
-          y1: prevNode.y,
-          x2: prevNode.x - len * Math.sin(this.angle),
-          y2: prevNode.y - len * Math.cos(this.angle),
-        };
-        currBase = { ...node };
+        angle += this.angle;
       } else if (curr === "-") {
-        node = {
-          x1: prevNode.x,
-          y1: prevNode.y,
-          x2: prevNode.x - len * Math.sin(-this.angle),
-          y2: prevNode.y - len * Math.cos(-this.angle),
-        };
-        currBase = { ...node };
+        angle -= this.angle;
       } else if (curr === "[") {
-        this.stack.push({ pos: { ...currBase } });
+        this.stack.push({ pos: { ...currBase }, angle: angle });
       } else if (curr === "]") {
-        this.stack.pop();
-        if (this.stack.top() !== undefined) currBase = this.stack.top().pos;
+        const n = this.stack.pop();
+        currBase = n.pos;
+        angle = n.angle;
       }
-      if (curr !== "X") {
-        this.tree.push({ ...node });
-        prevNode = {x: currBase.x2, y: currBase.y2};
-      }
+      prevNode = { x: currBase.x2, y: currBase.y2 };
     }
   }
 
   /* ====Public methods==== */
-  generate() {
-    this.sentence = this._makeSentence(this.sentence);
-    this._traceBranches(
-      this.sentence,
-      randomRange(this.startLenRange[0], this.startLenRange[1])
-    );
+  generate(root = { x: 0, y: 0 }, passes = 3) {
+    this.tree = [];
+    this.sentence = this.axiom;
+
+    let bLen = randomRange(this.startLenRange[0], this.startLenRange[1]);
+    for (let i = 0; i < passes; i++) {
+      this.sentence = this._makeSentence(this.sentence);
+      this._traceBranches(root, this.sentence, bLen);
+      bLen *= 0.7;
+    }
+
     return this.tree;
   }
 }
