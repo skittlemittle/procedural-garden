@@ -37,18 +37,15 @@ export default class Tree {
     this.tree.push({ ...node });
     let currBase = node;
 
-    // TODO: ignore alrady branched nodes
     for (let i = 0; i < randomRange(this.bRange[0], this.bRange[1]); i++) {
       this.stack.push({ pos: { ...currBase }, angle: angle });
       this._branch(len * randomRange(0.4, 1), {
         x: currBase.x2,
         y: currBase.y2,
       });
-      this.stack.pop();
-      if (this.stack.top() !== undefined) {
-        currBase = this.stack.top().pos;
-        this.prevAngle = this.stack.top().angle;
-      }
+      const n = this.stack.pop();
+      currBase = n.pos;
+      this.prevAngle = n.angle;
     }
   }
 
@@ -57,6 +54,7 @@ export default class Tree {
     const minL = this.startLenRange[0];
     const maxL = this.startLenRange[1];
     this.tree = [];
+    this.prevAngle = 0;
 
     this.tree.push({
       x1: this.root.x,
