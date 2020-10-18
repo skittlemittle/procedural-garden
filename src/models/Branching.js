@@ -1,8 +1,8 @@
 // Generates trees by recursively making branches
-// MIT
+
 import { newStack, randomRange } from "../utils";
 
-export default class Tree {
+export default class Branching {
   constructor({
     angleRange = {
       min: -(Math.PI / 6),
@@ -22,18 +22,18 @@ export default class Tree {
     this.prevAngle = 0;
   }
 
-  _branch(len, prevNode = { x: 0, y: 0 }) {
+  _branch(len, prevBranch = { x: 0, y: 0 }) {
     if (len < this.minBranchSize) return;
 
     const angle = randomRange(this.angleRange.min, this.angleRange.max);
-    const node = {
-      x1: prevNode.x,
-      y1: prevNode.y,
-      x2: prevNode.x - len * Math.sin(angle + this.prevAngle),
-      y2: prevNode.y - len * Math.cos(angle + this.prevAngle),
+    const branch = {
+      x1: prevBranch.x,
+      y1: prevBranch.y,
+      x2: prevBranch.x - len * Math.sin(angle + this.prevAngle),
+      y2: prevBranch.y - len * Math.cos(angle + this.prevAngle),
     };
-    this.tree.push({ ...node });
-    let currBase = node;
+    this.tree.push({ ...branch });
+    let currBase = branch;
 
     for (let i = 0; i < randomRange(this.bRange[0], this.bRange[1]); i++) {
       this.stack.push({ pos: { ...currBase }, angle: angle });

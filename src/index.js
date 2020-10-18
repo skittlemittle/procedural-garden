@@ -2,8 +2,9 @@
 // MIT
 import * as PIXI from "pixi.js";
 
-import Tree from "./models/branching";
-import Lsystem from "./models/L-system";
+// import Branching from "./models/Branching";
+// import Lsystem from "./models/L-system";
+import SpaceColonization from "./models/Space-colonization";
 
 const WIDTH = 800;
 const HEIGHT = 700;
@@ -21,18 +22,20 @@ app.ticker.add(() => {
 });
 
 const graphics = new PIXI.Graphics();
-// const Letree = new Tree({
+// const Letree = new Branching({
 //   startLenRange: [150, 200],
 //   minBranchSize: 20,
 //   bRange: [1, 3],
 // });
 
-const Letree = new Lsystem({
-  axiom: "F",
-  rules: [{ condition: "F", result: "FF+[+F-F-F]-[-F+F+F]" }],
-  startLenRange: [40, 60],
-  angle: (5 * Math.PI) / 36, // 25 degrees lol
-});
+// const Letree = new Lsystem({
+//   axiom: "F",
+//   rules: [{ condition: "F", result: "FF+[+F-F-F]-[-F+F+F]" }],
+//   startLenRange: [40, 60],
+//   angle: (5 * Math.PI) / 36, // 25 degrees lol
+// });
+
+const Letree = new SpaceColonization();
 
 document.addEventListener("keydown", () => {
   graphics.clear();

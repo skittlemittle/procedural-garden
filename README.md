@@ -14,6 +14,8 @@ Procedurally generated plants.
 
 - [ ] favicon
 
+- [ ] vine generator
+
 - [ ] shrub generator
 
 - [ ] small plant generator

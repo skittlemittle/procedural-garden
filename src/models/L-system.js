@@ -25,10 +25,6 @@ export default class Lsystem {
     this.startLenRange = startLenRange;
     this.angle = angle;
 
-    this.dFunctions = {
-      F: () => 0,
-      X: () => -1,
-    };
     this.stack = newStack();
     this.sentence = axiom;
     this.tree = []; // list of lines: {x1, y1, x2, y2}
@@ -37,8 +33,7 @@ export default class Lsystem {
   // basically stolen from coding train
   _makeSentence(sentence = "") {
     let nextSentence = "";
-    for (let i = 0; i < sentence.length; i++) {
-      const curr = sentence.charAt(i);
+    for (const curr of sentence) {
       let found = false;
       this.rules.forEach((rule) => {
         if (curr === rule.condition && !found) {
@@ -53,20 +48,19 @@ export default class Lsystem {
 
   //TODO: goblinesque, redo
   _traceBranches(root, sentence = "", len = 0) {
-    let prevNode = { ...root };
-    let node, currBase;
+    let prevBranch = { ...root };
+    let branch, currBase;
     let angle = 0;
-    for (let i = 0; i < sentence.length; i++) {
-      const curr = sentence.charAt(i);
+    for (const curr of sentence) {
       if (curr === "F") {
-        node = {
-          x1: prevNode.x,
-          y1: prevNode.y,
-          x2: prevNode.x - len * Math.sin(angle),
-          y2: prevNode.y - len * Math.cos(angle),
+        branch = {
+          x1: prevBranch.x,
+          y1: prevBranch.y,
+          x2: prevBranch.x - len * Math.sin(angle),
+          y2: prevBranch.y - len * Math.cos(angle),
         };
-        this.tree.push({ ...node });
-        currBase = { ...node };
+        this.tree.push({ ...branch });
+        currBase = { ...branch };
       } else if (curr === "+") {
         angle += this.angle;
       } else if (curr === "-") {
@@ -78,7 +72,7 @@ export default class Lsystem {
         currBase = n.pos;
         angle = n.angle;
       }
-      prevNode = { x: currBase.x2, y: currBase.y2 };
+      prevBranch = { x: currBase.x2, y: currBase.y2 };
     }
   }
 
