@@ -1,4 +1,5 @@
 // space colonizing tree generator, based off codingtrains vid
+// makes a tree given a "leaf space" which is just a 2d shape
 
 import {
   randomRange,
@@ -14,7 +15,7 @@ function newLeaf() {
 }
 
 // returns the next branch
-function newBranch(prevNode, direction, len = 5) {
+function newBranch(prevNode, direction, len = 10) {
   const d = vectorAdd(prevNode, { x: direction.x * len, y: direction.y * len });
   return {
     branch: { x1: prevNode.x, y1: prevNode.y, x2: d.x, y2: d.y },
@@ -23,9 +24,8 @@ function newBranch(prevNode, direction, len = 5) {
   };
 }
 
-// makes a tree given a "leaf space" which is just a 2d shape
 export default class SpaceColonization {
-  constructor(minDist = 10, maxDist = 100) {
+  constructor(minDist = 20, maxDist = 100) {
     this.minDist = minDist;
     this.maxDist = maxDist;
 
@@ -72,10 +72,10 @@ export default class SpaceColonization {
     for (let i = this._branches.length - 1; i >= 0; i--) {
       const branch = this._branches[i];
       if (branch.count > 0) {
-        const nextDir = {
-          x: branch.direction.x / branch.count + 1,
-          y: branch.direction.y / branch.count + 1,
-        };
+        const nextDir = normalize({
+          x: branch.direction.x,
+          y: branch.direction.y,
+        });
         const nextBranch = newBranch(
           {
             x: branch.branch.x2,
@@ -124,7 +124,7 @@ export default class SpaceColonization {
       }
     }
 
-    for (let i = 0; i < 30; i++) this._grow();
+    for (let i = 0; i < 100; i++) this._grow();
     return this.tree;
   }
 }

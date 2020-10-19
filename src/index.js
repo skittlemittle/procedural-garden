@@ -2,9 +2,9 @@
 // MIT
 import * as PIXI from "pixi.js";
 
-// import Branching from "./models/Branching";
-// import Lsystem from "./models/L-system";
-import SpaceColonization from "./models/Space-colonization";
+// import Branching from "./generators/Branching";
+// import Lsystem from "./generators/L-system";
+import SpaceColonization from "./generators/Space-colonization";
 
 const WIDTH = 800;
 const HEIGHT = 700;
@@ -18,8 +18,7 @@ const app = new PIXI.Application({
 document.body.appendChild(app.view);
 
 // render loop
-app.ticker.add(() => {
-});
+app.ticker.add(() => {});
 
 const graphics = new PIXI.Graphics();
 // const Letree = new Branching({
@@ -29,8 +28,22 @@ const graphics = new PIXI.Graphics();
 // });
 
 // const Letree = new Lsystem({
-//   axiom: "F",
-//   rules: [{ condition: "F", result: "FF+[+F-F-F]-[-F+F+F]" }],
+//   axiom: "X",
+//   rules: [
+//     {
+//       condition: "X",
+//       result:
+//         "F+-+[[X[[L][+L][-L]]]--X[[L][++L][--L]]]-F[-F[[L][+L][-L]]]+X[[L][+L][-L]]",
+//     },
+//     {
+//       condition: "F",
+//       result: "FF",
+//     },
+//     {
+//       condition: "L",
+//       result: "[L[++L][--L]]",
+//     },
+//   ],
 //   startLenRange: [40, 60],
 //   angle: (5 * Math.PI) / 36, // 25 degrees lol
 // });
@@ -39,8 +52,8 @@ const Letree = new SpaceColonization();
 
 document.addEventListener("keydown", () => {
   graphics.clear();
-  graphics.lineStyle(1, 0xffffff, 1);
   const branches = Letree.generate({ x: WIDTH / 2, y: HEIGHT });
+  graphics.lineStyle(1, 0xffffff, 1);
 
   graphics.moveTo(WIDTH / 2, HEIGHT);
 

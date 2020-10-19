@@ -77,7 +77,7 @@ export default class Lsystem {
   }
 
   /* ====Public methods==== */
-  generate(root = { x: 0, y: 0 }, passes = 3) {
+  generate(root = { x: 0, y: 0 }, passes = 5) {
     this.tree = [];
     this.sentence = this.axiom;
 
