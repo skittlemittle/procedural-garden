@@ -3,8 +3,8 @@
 import * as PIXI from "pixi.js";
 
 // import Branching from "./generators/Branching";
-// import Lsystem from "./generators/L-system";
-import SpaceColonization from "./generators/Space-colonization";
+import Lsystem from "./generators/L-system";
+// import SpaceColonization from "./generators/Space-colonization";
 
 const WIDTH = 800;
 const HEIGHT = 700;
@@ -27,28 +27,28 @@ const graphics = new PIXI.Graphics();
 //   bRange: [1, 3],
 // });
 
-// const Letree = new Lsystem({
-//   axiom: "X",
-//   rules: [
-//     {
-//       condition: "X",
-//       result:
-//         "F+-+[[X[[L][+L][-L]]]--X[[L][++L][--L]]]-F[-F[[L][+L][-L]]]+X[[L][+L][-L]]",
-//     },
-//     {
-//       condition: "F",
-//       result: "FF",
-//     },
-//     {
-//       condition: "L",
-//       result: "[L[++L][--L]]",
-//     },
-//   ],
-//   startLenRange: [40, 60],
-//   angle: (5 * Math.PI) / 36, // 25 degrees lol
-// });
-
-const Letree = new SpaceColonization();
+const Letree = new Lsystem({
+  axiom: "X",
+  rules: [
+    {
+      condition: "X",
+      result: [
+        "F+-+[[X[[L][+L][-L]]]--X[[L][++L][--L]]]-F[-F[[L][+L][-L]]]+X[[L][+L][-L]]",
+      ],
+    },
+    {
+      condition: "F",
+      result: ["FF", "F"],
+    },
+    {
+      condition: "L",
+      result: ["[L[++L][--L]]", "L"],
+    },
+  ],
+  startLenRange: [40, 60],
+  angleRange: { min: (5 * Math.PI) / 36, max: Math.PI / 4 }, // 25 to 45 degrees lol
+});
+// const Letree = new SpaceColonization();
 
 document.addEventListener("keydown", () => {
   graphics.clear();

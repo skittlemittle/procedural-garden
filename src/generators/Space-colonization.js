@@ -25,7 +25,7 @@ function newBranch(prevNode, direction, len = 10) {
 }
 
 export default class SpaceColonization {
-  constructor(minDist = 20, maxDist = 100) {
+  constructor(minDist = 20, maxDist = 500) {
     this.minDist = minDist;
     this.maxDist = maxDist;
 

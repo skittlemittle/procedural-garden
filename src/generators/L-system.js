@@ -1,7 +1,9 @@
 /*L system
   alphabet is a string
   axiom is a string
-  rules is an array of objects: [{condition: "A", result: "B"}, ...]
+  rules is an array of objects: [{condition: "A", result: ["B"]}, ...]
+  you may pass multiple results to a rule, one will be picked at random
+  [{condition: "A", result: ["A", "B"]}]
 
   alphabet:
   F: draw forward
@@ -18,12 +20,12 @@ export default class Lsystem {
     axiom = "",
     rules = [],
     startLenRange = [100, 200],
-    angle = 0,
+    angleRange = [],
   }) {
     this.axiom = axiom;
     this.rules = rules;
     this.startLenRange = startLenRange;
-    this.angle = angle;
+    this.angleRange = angleRange;
 
     this.stack = newStack();
     this.sentence = axiom;
@@ -38,7 +40,9 @@ export default class Lsystem {
       this.rules.forEach((rule) => {
         if (curr === rule.condition && !found) {
           found = true;
-          nextSentence += rule.result;
+          const res =
+            rule.result[Math.round(randomRange(0, rule.result.length - 1))];
+          nextSentence += res;
         }
       });
       if (!found) nextSentence += curr;
@@ -62,9 +66,9 @@ export default class Lsystem {
         this.tree.push({ ...branch });
         currBase = { ...branch };
       } else if (curr === "+") {
-        angle += this.angle;
+        angle += randomRange(this.angleRange.min, this.angleRange.max);
       } else if (curr === "-") {
-        angle -= this.angle;
+        angle -= randomRange(this.angleRange.min, this.angleRange.max);
       } else if (curr === "[") {
         this.stack.push({ pos: { ...currBase }, angle: angle });
       } else if (curr === "]") {
@@ -77,7 +81,7 @@ export default class Lsystem {
   }
 
   /* ====Public methods==== */
-  generate(root = { x: 0, y: 0 }, passes = 5) {
+  generate(root = { x: 0, y: 0 }, passes = 4) {
     this.tree = [];
     this.sentence = this.axiom;
 
@@ -85,7 +89,7 @@ export default class Lsystem {
     for (let i = 0; i < passes; i++) {
       this.sentence = this._makeSentence(this.sentence);
       this._traceBranches(root, this.sentence, bLen);
-      bLen *= 0.7;
+      bLen *= randomRange(0.6, 1);
     }
 
     return this.tree;
