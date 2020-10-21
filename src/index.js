@@ -4,6 +4,7 @@ import * as PIXI from "pixi.js";
 
 // import Branching from "./generators/Branching";
 import Lsystem from "./generators/L-system";
+import newOak from "./trees/oak";
 // import SpaceColonization from "./generators/Space-colonization";
 
 const WIDTH = 800;
@@ -20,7 +21,6 @@ document.body.appendChild(app.view);
 // render loop
 app.ticker.add(() => {});
 
-const graphics = new PIXI.Graphics();
 // const Letree = new Branching({
 //   startLenRange: [150, 200],
 //   minBranchSize: 20,
@@ -49,11 +49,15 @@ const Letree = new Lsystem({
   angleRange: { min: (5 * Math.PI) / 36, max: Math.PI / 4 }, // 25 to 45 degrees lol
 });
 // const Letree = new SpaceColonization();
+const graphics = new PIXI.Graphics();
 
 document.addEventListener("keydown", () => {
   graphics.clear();
-  const branches = Letree.generate({ x: WIDTH / 2, y: HEIGHT });
   graphics.lineStyle(1, 0xffffff, 1);
+
+  const { crown, branches } = newOak({ x: WIDTH / 2, y: HEIGHT });
+  graphics.drawPolygon(crown);
+  // const branches = Letree.generate({ x: WIDTH / 2, y: HEIGHT });
 
   graphics.moveTo(WIDTH / 2, HEIGHT);
 

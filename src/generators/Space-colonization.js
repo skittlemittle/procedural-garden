@@ -7,11 +7,10 @@ import {
   vectorDistance,
   vectorSubtract,
   normalize,
-} from "../utils";
+} from "../utils/utils";
 
-function newLeaf() {
-  const position = { x: randomRange(100, 700), y: randomRange(100, 400) };
-  return { pos: position, reached: false };
+function newLeaf(x, y) {
+  return { pos: { x: x, y: y }, reached: false };
 }
 
 // returns the next branch
@@ -92,12 +91,12 @@ export default class SpaceColonization {
   }
 
   /* ====Public methods==== */
-  generate(root = { x: 0, y: 0 }, numLeaves = 200) {
+  generate(root = { x: 0, y: 0 }, leaves) {
     this.tree = [];
     this._branches = [];
     this.leaves = [];
     // make leef cluster
-    for (let i = 0; i < numLeaves; i++) this.leaves.push(newLeaf());
+    for (const leaf of leaves) this.leaves.push(newLeaf(leaf.x, leaf.y));
     // init branch
     const firstB = newBranch({ x: root.x, y: root.y }, { x: 0, y: -1 });
     this.tree.push(firstB.branch);

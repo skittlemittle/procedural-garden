@@ -22,6 +22,10 @@ Procedurally generated plants.
 
 - [ ] particle effects
 
+## Credits:
+
+perlin noise: Joseph Gentle (https://github.com/josephg/noisejs)
+
 ## License:
 
 MIT

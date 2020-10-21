@@ -28,7 +28,7 @@ function vectorDistance(v1, v2) {
 
 function normalize(vector) {
   const len = Math.sqrt(vector.x ** 2 + vector.y ** 2);
-  if (len !== 0) return { x: (vector.x) / len, y: (vector.y) / len };
+  if (len !== 0) return { x: vector.x / len, y: vector.y / len };
 }
 
 export { newStack };

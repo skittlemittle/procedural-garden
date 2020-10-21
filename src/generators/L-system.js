@@ -13,7 +13,7 @@
   ]: pop
  */
 
-import { newStack, randomRange } from "../utils";
+import { newStack, randomRange } from "../utils/utils";
 
 export default class Lsystem {
   constructor({
