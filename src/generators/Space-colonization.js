@@ -25,18 +25,16 @@ function newBranch(prevNode, direction, len = 10) {
 
 export default class SpaceColonization {
   constructor(
-    leafBlobs = [
-      {
-        blob: null,
-        r: -1,
-        center: { x: 0, y: 0 },
-        numLeaves: 300,
-      },
-    ],
+    leafBlob = {
+      poly: null,
+      r: -1,
+      center: { x: 0, y: 0 },
+      numLeaves: 300,
+    },
     minDist = 20,
-    maxDist = 500
+    maxDist = 400
   ) {
-    this.leafBlobs = leafBlobs;
+    this.leafBlob = leafBlob;
     this.minDist = minDist;
     this.maxDist = maxDist;
 
@@ -46,7 +44,7 @@ export default class SpaceColonization {
   }
 
   // scatter leaf attractors in a given "blob" polygon
-  _scatterLeaves(blob, r, center, numLeaves = 300) {
+  _scatterLeaves({poly, r, center, numLeaves = 300}) {
     const leaves = [];
     for (let i = 0; i < numLeaves; i++) {
       const angle = randomRange(0, 2 * Math.PI);
@@ -55,7 +53,7 @@ export default class SpaceColonization {
         x: dist * Math.cos(angle) + center.x,
         y: dist * Math.sin(angle) + center.y,
       };
-      if (blob.contains(leaf.x, leaf.y)) leaves.push(leaf);
+      if (poly.contains(leaf.x, leaf.y)) leaves.push(leaf);
     }
     return leaves;
   }
@@ -124,10 +122,8 @@ export default class SpaceColonization {
     this.leaves.length = 0;
 
     // make leef clusters
-    for (const b of this.leafBlobs) {
-      const leaves = this._scatterLeaves(b.blob, b.r, b.center, b.numLeaves);
-      for (const l of leaves) this.leaves.push(newLeaf(l.x, l.y));
-    }
+    const leaves = this._scatterLeaves(this.leafBlob);
+    for (const l of leaves) this.leaves.push(newLeaf(l.x, l.y));
     // init branch
     const firstB = newBranch({ x: root.x, y: root.y }, { x: 0, y: -1 });
     this.tree.push(firstB.branch);
