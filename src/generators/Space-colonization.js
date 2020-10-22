@@ -24,13 +24,40 @@ function newBranch(prevNode, direction, len = 10) {
 }
 
 export default class SpaceColonization {
-  constructor(minDist = 20, maxDist = 500) {
+  constructor(
+    leafBlobs = [
+      {
+        blob: null,
+        r: -1,
+        center: { x: 0, y: 0 },
+        numLeaves: 300,
+      },
+    ],
+    minDist = 20,
+    maxDist = 500
+  ) {
+    this.leafBlobs = leafBlobs;
     this.minDist = minDist;
     this.maxDist = maxDist;
 
     this.leaves = [];
     this.tree = [];
     this._branches = [];
+  }
+
+  // scatter leaf attractors in a given "blob" polygon
+  _scatterLeaves(blob, r, center, numLeaves = 300) {
+    const leaves = [];
+    for (let i = 0; i < numLeaves; i++) {
+      const angle = randomRange(0, 2 * Math.PI);
+      const dist = Math.sqrt(Math.random()) * r; // we want an even distribution
+      const leaf = {
+        x: dist * Math.cos(angle) + center.x,
+        y: dist * Math.sin(angle) + center.y,
+      };
+      if (blob.contains(leaf.x, leaf.y)) leaves.push(leaf);
+    }
+    return leaves;
   }
 
   // leaves pull the closest branch towards themselves
@@ -91,12 +118,16 @@ export default class SpaceColonization {
   }
 
   /* ====Public methods==== */
-  generate(root = { x: 0, y: 0 }, leaves) {
-    this.tree = [];
-    this._branches = [];
-    this.leaves = [];
-    // make leef cluster
-    for (const leaf of leaves) this.leaves.push(newLeaf(leaf.x, leaf.y));
+  generate(root = { x: 0, y: 0 }) {
+    this.tree.length = 0;
+    this._branches.length = 0;
+    this.leaves.length = 0;
+
+    // make leef clusters
+    for (const b of this.leafBlobs) {
+      const leaves = this._scatterLeaves(b.blob, b.r, b.center, b.numLeaves);
+      for (const l of leaves) this.leaves.push(newLeaf(l.x, l.y));
+    }
     // init branch
     const firstB = newBranch({ x: root.x, y: root.y }, { x: 0, y: -1 });
     this.tree.push(firstB.branch);
@@ -123,7 +154,7 @@ export default class SpaceColonization {
       }
     }
 
-    for (let i = 0; i < 100; i++) this._grow();
+    for (let i = 0; i < 100; i++) this._grow(); // TODO: AAAAAAAAAAAAAAAAAAAAAA
     return this.tree;
   }
 }
