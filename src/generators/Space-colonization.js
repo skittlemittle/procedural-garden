@@ -27,7 +27,8 @@ export default class SpaceColonization {
   constructor(
     leafBlob = {
       poly: null,
-      r: -1,
+      w: -1,
+      h: -1,
       center: { x: 0, y: 0 },
       numLeaves: 300,
     },
@@ -44,14 +45,12 @@ export default class SpaceColonization {
   }
 
   // scatter leaf attractors in a given "blob" polygon
-  _scatterLeaves({poly, r, center, numLeaves = 300}) {
+  _scatterLeaves({ poly, w, h, center, numLeaves = 300 }) {
     const leaves = [];
     for (let i = 0; i < numLeaves; i++) {
-      const angle = randomRange(0, 2 * Math.PI);
-      const dist = Math.sqrt(Math.random()) * r; // we want an even distribution
       const leaf = {
-        x: dist * Math.cos(angle) + center.x,
-        y: dist * Math.sin(angle) + center.y,
+        x: randomRange(-w, w) + center.x,
+        y: randomRange(-h, h) + center.y,
       };
       if (poly.contains(leaf.x, leaf.y)) leaves.push(leaf);
     }
