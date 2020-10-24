@@ -4,7 +4,7 @@ import * as Noise from "../utils/noise";
 import SpaceColonization from "../generators/Space-colonization";
 
 // returns a "noisy" ellipse
-function makeLeafBlob(x0, y0, w, h, nRange = []) {
+function makeCrownBlob(x0, y0, w, h, nRange = []) {
   const b = h / 2;
   const a = w / 2;
   let xoff, yoff;
@@ -27,7 +27,7 @@ function makeLeafBlob(x0, y0, w, h, nRange = []) {
 function newOak(root = { x: 0, y: 0 }, height = 500) {
   const lwidth = 400;
   const lheight = 200;
-  const crown = makeLeafBlob(root.x, root.y - height, lwidth, lheight, [
+  const crown = makeCrownBlob(root.x, root.y - height, lwidth, lheight, [
     150,
     400,
   ]);
@@ -39,8 +39,8 @@ function newOak(root = { x: 0, y: 0 }, height = 500) {
     center: { x: root.x, y: root.y - height },
     numLeaves: 200,
   });
-  const branches = Tree.generate(root);
-  return { crown, branches };
+  const { tree, leaves } = Tree.generate(root);
+  return { tree, leaves };
 }
 
 export default newOak;

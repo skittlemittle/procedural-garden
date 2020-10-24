@@ -9,20 +9,6 @@ import {
   normalize,
 } from "../utils/utils";
 
-function newLeaf(x, y) {
-  return { pos: { x: x, y: y }, reached: false };
-}
-
-// returns the next branch
-function newBranch(prevNode, direction, len = 10) {
-  const d = vectorAdd(prevNode, { x: direction.x * len, y: direction.y * len });
-  return {
-    branch: { x1: prevNode.x, y1: prevNode.y, x2: d.x, y2: d.y },
-    direction: direction,
-    count: 0,
-  };
-}
-
 export default class SpaceColonization {
   constructor(
     leafBlob = {
@@ -33,42 +19,67 @@ export default class SpaceColonization {
       numLeaves: 300,
     },
     minDist = 20,
-    maxDist = 400
+    maxDist = 100,
+    branchLen = 10
   ) {
     this.leafBlob = leafBlob;
     this.minDist = minDist;
     this.maxDist = maxDist;
+    this.branchLen = branchLen;
 
-    this.leaves = [];
+    this.attractors = [];
     this.tree = [];
+    this.leaves = [];
     this._branches = [];
   }
 
-  // scatter leaf attractors in a given "blob" polygon
-  _scatterLeaves({ poly, w, h, center, numLeaves = 300 }) {
-    const leaves = [];
-    for (let i = 0; i < numLeaves; i++) {
+  _newAttractor(x, y) {
+    return { pos: { x: x, y: y }, reached: false };
+  }
+
+  // returns the next branch
+  _newBranch(prevNode, direction, parent = null, len = this.branchLen) {
+    const d = vectorAdd(prevNode, {
+      x: direction.x * len,
+      y: direction.y * len,
+    });
+    return {
+      branch: { x1: prevNode.x, y1: prevNode.y, x2: d.x, y2: d.y },
+      direction: direction,
+      count: 0,
+      parent: parent,
+    };
+  }
+
+  _addLeaf(pos, density = 0.5) {
+    if (Math.random() % 2 > density) this.leaves.push({ x: pos.x, y: pos.y });
+  }
+
+  // scatter attractors in a given "blob" polygon
+  _scatterAttractors({ poly, w, h, center, numAttractors = 300 }) {
+    const attractors = [];
+    for (let i = 0; i < numAttractors; i++) {
       const leaf = {
         x: randomRange(-w, w) + center.x,
         y: randomRange(-h, h) + center.y,
       };
-      if (poly.contains(leaf.x, leaf.y)) leaves.push(leaf);
+      if (poly.contains(leaf.x, leaf.y)) attractors.push(leaf);
     }
-    return leaves;
+    return attractors;
   }
 
-  // leaves pull the closest branch towards themselves
+  // leaf attractors pull the closest branch towards themselves
   _grow() {
-    for (const leaf of this.leaves) {
+    for (const attractor of this.attractors) {
       let closestBranch = null;
       let record = this.maxDist;
       for (const branch of this._branches) {
-        const dist = vectorDistance(leaf.pos, {
+        const dist = vectorDistance(attractor.pos, {
           x: branch.branch.x2,
           y: branch.branch.y2,
         });
         if (dist < this.minDist) {
-          leaf.reached = true;
+          attractor.reached = true;
           closestBranch = null;
           break;
         } else if (dist < record) {
@@ -78,7 +89,7 @@ export default class SpaceColonization {
       }
       if (closestBranch !== null) {
         const newDir = normalize(
-          vectorSubtract(leaf.pos, {
+          vectorSubtract(attractor.pos, {
             x: closestBranch.branch.x2,
             y: closestBranch.branch.y2,
           })
@@ -87,9 +98,13 @@ export default class SpaceColonization {
         closestBranch.count++;
       }
     }
-    // cull leaves
-    for (let i = this.leaves.length - 1; i >= 0; i--) {
-      if (this.leaves[i].reached) this.leaves.splice(i, 1);
+    // cull attractors and add leaves
+    for (let i = this.attractors.length - 1; i >= 0; i--) {
+      if (this.attractors[i].reached) {
+        // random chance for a "reached" attractor to become a leaf
+        this._addLeaf({ ...this.attractors[i].pos });
+        this.attractors.splice(i, 1);
+      }
     }
     // add new branches
     for (let i = this._branches.length - 1; i >= 0; i--) {
@@ -99,7 +114,7 @@ export default class SpaceColonization {
           x: branch.direction.x,
           y: branch.direction.y,
         });
-        const nextBranch = newBranch(
+        const nextBranch = this._newBranch(
           {
             x: branch.branch.x2,
             y: branch.branch.y2,
@@ -115,16 +130,18 @@ export default class SpaceColonization {
   }
 
   /* ====Public methods==== */
-  generate(root = { x: 0, y: 0 }) {
+  generate(root = { x: 0, y: 0 }, iterations = 150) {
     this.tree.length = 0;
     this._branches.length = 0;
     this.leaves.length = 0;
+    this.attractors.length = 0;
 
-    // make leef clusters
-    const leaves = this._scatterLeaves(this.leafBlob);
-    for (const l of leaves) this.leaves.push(newLeaf(l.x, l.y));
+    // make attractor cluster
+    const attractors = this._scatterAttractors(this.leafBlob);
+    for (const a of attractors)
+      this.attractors.push(this._newAttractor(a.x, a.y));
     // init branch
-    const firstB = newBranch({ x: root.x, y: root.y }, { x: 0, y: -1 });
+    const firstB = this._newBranch({ x: root.x, y: root.y }, { x: 0, y: -1 });
     this.tree.push(firstB.branch);
     this._branches.push(firstB);
 
@@ -132,15 +149,15 @@ export default class SpaceColonization {
     let found = false;
     let currB = firstB;
     while (!found) {
-      for (const leaf of this.leaves) {
+      for (const attractor of this.attractors) {
         const dist = vectorDistance(
           { x: currB.branch.x2, y: currB.branch.y2 },
-          leaf.pos
+          attractor.pos
         );
         if (dist < this.maxDist) found = true;
       }
       if (!found) {
-        currB = newBranch(
+        currB = this._newBranch(
           { x: currB.branch.x2, y: currB.branch.y2 },
           { x: 0, y: -1 }
         );
@@ -149,7 +166,7 @@ export default class SpaceColonization {
       }
     }
 
-    for (let i = 0; i < 100; i++) this._grow(); // TODO: AAAAAAAAAAAAAAAAAAAAAA
-    return this.tree;
+    for (let i = 0; i < iterations; i++) this._grow();
+    return { tree: this.tree, leaves: this.leaves };
   }
 }

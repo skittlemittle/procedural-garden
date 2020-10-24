@@ -16,9 +16,6 @@ const app = new PIXI.Application({
 });
 document.body.appendChild(app.view);
 
-// render loop
-app.ticker.add(() => {});
-
 // const Letree = new Branching({
 //   startLenRange: [150, 200],
 //   minBranchSize: 20,
@@ -48,16 +45,39 @@ app.ticker.add(() => {});
 // });
 const graphics = new PIXI.Graphics();
 
+////////////////////////////
+const loader = PIXI.Loader.shared;
+loader.onComplete.add(loaded);
+loader.add("leef", "./assets/leaf.png");
+loader.load();
+
+let img;
+function loaded() {
+  const texture = loader.resources["leef"].texture;
+  img = new PIXI.Sprite(texture);
+  img.anchor.x = 0.5;
+  img.anchor.y = 0.5;
+  // app.stage.addChild(img);
+  app.ticker.add(animate);
+}
+
+function animate() {
+  img.x = app.renderer.screen.width / 2;
+  img.y = app.renderer.screen.height / 2;
+}
+////////////////////////////
+
 document.addEventListener("keydown", () => {
   graphics.clear();
+  graphics.lineStyle(5, 0x00cc7c, 1);
+
+  const { tree, leaves } = newOak({ x: WIDTH / 2, y: HEIGHT });
+  leaves.forEach((e) => graphics.drawCircle(e.x, e.y, 2));
+
   graphics.lineStyle(1, 0xffffff, 1);
-
-  const { crown, branches } = newOak({ x: WIDTH / 2, y: HEIGHT });
-  graphics.drawPolygon(crown);
-
   graphics.moveTo(WIDTH / 2, HEIGHT);
 
-  branches.forEach((element) => {
+  tree.forEach((element) => {
     graphics.moveTo(element.x1, element.y1);
     graphics.lineTo(element.x2, element.y2);
   });
