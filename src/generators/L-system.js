@@ -1,12 +1,12 @@
 /*L system
-  alphabet is a string
   axiom is a string
-  rules is an array of objects: [{condition: "A", result: ["B"]}, ...]
+  rules is an array of objects: [{condition: "A", results: ["B"]}, ...]
   you may pass multiple results to a rule, one will be picked at random
-  [{condition: "A", result: ["A", "B"]}]
+  [{condition: "A", results: ["A", "B"]}]
 
   alphabet:
   F: draw forward
+  L: draw leaf
   +: turn left by <angle>
   -: turn right by <angle>
   [: push
@@ -30,6 +30,7 @@ export default class Lsystem {
     this.stack = newStack();
     this.sentence = axiom;
     this.tree = []; // list of lines: {x1, y1, x2, y2}
+    this.leaves = [];
   }
 
   // basically stolen from coding train
@@ -51,13 +52,14 @@ export default class Lsystem {
   }
 
   //TODO: goblinesque, redo
-  _traceBranches(root, sentence = "", len = 0) {
+  _traceBranches(root, sentence = "", startLen = 0) {
     let prevBranch = { ...root };
-    let branch, currBase;
     let angle = 0;
+    let len = startLen;
+    let currBase;
     for (const curr of sentence) {
       if (curr === "F") {
-        branch = {
+        const branch = {
           x1: prevBranch.x,
           y1: prevBranch.y,
           x2: prevBranch.x - len * Math.sin(angle),
@@ -65,6 +67,16 @@ export default class Lsystem {
         };
         this.tree.push({ ...branch });
         currBase = { ...branch };
+        len *= 0.99;
+      } else if (curr === "L") {
+        const leaf = {
+          x1: prevBranch.x,
+          y1: prevBranch.y,
+          x2: prevBranch.x - len * Math.sin(angle),
+          y2: prevBranch.y - len * Math.cos(angle),
+        };
+        this.leaves.push({ ...leaf });
+        currBase = { ...leaf };
       } else if (curr === "+") {
         angle += randomRange(this.angleRange.min, this.angleRange.max);
       } else if (curr === "-") {
@@ -82,16 +94,15 @@ export default class Lsystem {
 
   /* ====Public methods==== */
   generate(root = { x: 0, y: 0 }, passes = 4) {
-    this.tree = [];
+    this.tree.length = 0;
+    this.leaves.length = 0;
     this.sentence = this.axiom;
+    const bLen = randomRange(this.startLenRange[0], this.startLenRange[1]);
 
-    let bLen = randomRange(this.startLenRange[0], this.startLenRange[1]);
-    for (let i = 0; i < passes; i++) {
+    for (let i = 0; i < passes; i++)
       this.sentence = this._makeSentence(this.sentence);
-      this._traceBranches(root, this.sentence, bLen);
-      bLen *= randomRange(0.6, 1);
-    }
 
-    return this.tree;
+    this._traceBranches(root, this.sentence, bLen);
+    return { tree: this.tree, leaves: this.leaves };
   }
 }
