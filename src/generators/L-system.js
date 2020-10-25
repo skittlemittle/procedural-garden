@@ -11,9 +11,11 @@
   -: turn right by <angle>
   [: push
   ]: pop
+
+  alphabet stolen from: https://ameya98.github.io/WebPPL/generative_art/
  */
 
-import { newStack, randomRange } from "../utils/utils";
+import { newStack, randomRange } from "../utils/misc";
 
 export default class Lsystem {
   constructor({
@@ -34,7 +36,7 @@ export default class Lsystem {
   }
 
   // basically stolen from coding train
-  _makeSentence(sentence = "") {
+  _makeSentence(sentence) {
     let nextSentence = "";
     for (const curr of sentence) {
       let found = false;
@@ -52,7 +54,7 @@ export default class Lsystem {
   }
 
   //TODO: goblinesque, redo
-  _traceBranches(root, sentence = "", startLen = 0) {
+  _traceBranches(root, sentence, startLen) {
     let prevBranch = { ...root };
     let angle = 0;
     let len = startLen;
@@ -67,7 +69,7 @@ export default class Lsystem {
         };
         this.tree.push({ ...branch });
         currBase = { ...branch };
-        len *= 0.99;
+        len *= 0.9;
       } else if (curr === "L") {
         const leaf = {
           x1: prevBranch.x,
@@ -82,11 +84,12 @@ export default class Lsystem {
       } else if (curr === "-") {
         angle -= randomRange(this.angleRange.min, this.angleRange.max);
       } else if (curr === "[") {
-        this.stack.push({ pos: { ...currBase }, angle: angle });
+        this.stack.push({ pos: { ...currBase }, angle: angle, len: len });
       } else if (curr === "]") {
         const n = this.stack.pop();
         currBase = n.pos;
         angle = n.angle;
+        len = n.len;
       }
       prevBranch = { x: currBase.x2, y: currBase.y2 };
     }

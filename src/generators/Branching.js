@@ -1,6 +1,6 @@
 // Generates trees by recursively making branches
 
-import { newStack, randomRange } from "../utils";
+import { newStack, randomRange } from "../utils/misc";
 
 export default class Branching {
   constructor({
@@ -20,6 +20,7 @@ export default class Branching {
     this.stack = newStack();
     this.tree = []; // list of lines: {x1, y1, x2, y2}
     this.prevAngle = 0;
+    this.currBase;
   }
 
   _branch(len, prevBranch = { x: 0, y: 0 }) {
@@ -33,16 +34,16 @@ export default class Branching {
       y2: prevBranch.y - len * Math.cos(angle + this.prevAngle),
     };
     this.tree.push({ ...branch });
-    let currBase = branch;
+    this.currBase = branch;
 
     for (let i = 0; i < randomRange(this.bRange[0], this.bRange[1]); i++) {
-      this.stack.push({ pos: { ...currBase }, angle: angle });
+      this.stack.push({ pos: { ...this.currBase }, angle: angle });
       this._branch(len * randomRange(0.4, 1), {
-        x: currBase.x2,
-        y: currBase.y2,
+        x: this.currBase.x2,
+        y: this.currBase.y2,
       });
       const n = this.stack.pop();
-      currBase = n.pos;
+      this.currBase = n.pos;
       this.prevAngle = n.angle;
     }
   }
@@ -51,11 +52,11 @@ export default class Branching {
   generate(root = { x: 0, y: 0 }) {
     const minL = this.startLenRange[0];
     const maxL = this.startLenRange[1];
-    this.tree = [];
+    this.tree.length = 0;
     this.prevAngle = 0;
 
     this.tree.push({ x1: root.x, y1: root.y, x2: root.x, y2: root.y });
     this._branch(randomRange(minL, maxL), { x: root.x, y: root.y });
-    return this.tree;
+    return { tree: this.tree };
   }
 }

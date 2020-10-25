@@ -7,7 +7,7 @@ import {
   vectorDistance,
   vectorSubtract,
   normalize,
-} from "../utils/utils";
+} from "../utils/misc";
 
 export default class SpaceColonization {
   constructor(
@@ -20,12 +20,14 @@ export default class SpaceColonization {
     },
     minDist = 20,
     maxDist = 100,
-    branchLen = 10
+    branchLen = 10,
+    leafDensity = 0.5,
   ) {
     this.leafBlob = leafBlob;
     this.minDist = minDist;
     this.maxDist = maxDist;
     this.branchLen = branchLen;
+    this.leafDensity = leafDensity;
 
     this.attractors = [];
     this.tree = [];
@@ -51,7 +53,7 @@ export default class SpaceColonization {
     };
   }
 
-  _addLeaf(pos, density = 0.5) {
+  _addLeaf(pos, density = this.leafDensity) {
     if (Math.random() % 2 > density) this.leaves.push({ x: pos.x, y: pos.y });
   }
 

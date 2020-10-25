@@ -4,7 +4,7 @@ import * as Noise from "../utils/noise";
 import SpaceColonization from "../generators/Space-colonization";
 
 // returns a "noisy" ellipse
-function makeCrownBlob(x0, y0, w, h, nRange = []) {
+function makeCrownBlob(x0, y0, w, h, nRange) {
   const b = h / 2;
   const a = w / 2;
   let xoff, yoff;
