@@ -1,5 +1,4 @@
 // Generates trees by recursively making branches
-
 import { newStack, randomRange } from "../utils/misc";
 
 export default class Branching {

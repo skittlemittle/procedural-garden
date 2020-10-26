@@ -1,6 +1,6 @@
 import Lsystem from "../generators/L-system";
 
-// tall aspen
+// tall "aspen"
 function newAspen(root = { x: 0, y: 0 }, height) {
   const hRange = [height - 10, height + 20];
   // rules stolen from: https://ameya98.github.io/WebPPL/generative_art/
@@ -23,7 +23,7 @@ function newAspen(root = { x: 0, y: 0 }, height) {
         result: { "[L[++L][--L]]": 0.5, "L": 0.5 },
       },
     ],
-    shrink: 0.95,
+    shrink: 0.94,
     startLenRange: hRange,
     angleRange: { min: (5 * Math.PI) / 36, max: Math.PI / 4 }, // 25 to 45 degrees lol
   });

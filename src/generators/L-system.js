@@ -4,7 +4,7 @@
   you may pass multiple results to a rule, one will be picked randomly
   biased by its weight.
   weights should sum up to 1
-  [{condition: "A", results: {"A":, "B"}}]
+  [{condition: "A", results: {"A":weight, "B":weight}}]
 
   alphabet:
   F: draw forward
@@ -47,8 +47,7 @@ export default class Lsystem {
       this.rules.forEach((rule) => {
         if (curr === rule.condition && !found) {
           found = true;
-          const res = weightedRand(rule.result);
-          nextSentence += res;
+          nextSentence += weightedRand(rule.result);
         }
       });
       if (!found) nextSentence += curr;
