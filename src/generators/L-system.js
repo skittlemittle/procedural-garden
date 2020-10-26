@@ -1,8 +1,10 @@
 /*L system
   axiom is a string
   rules is an array of objects: [{condition: "A", results: ["B"]}, ...]
-  you may pass multiple results to a rule, one will be picked at random
-  [{condition: "A", results: ["A", "B"]}]
+  you may pass multiple results to a rule, one will be picked randomly
+  biased by its weight.
+  weights should sum up to 1
+  [{condition: "A", results: {"A":, "B"}}]
 
   alphabet:
   F: draw forward
@@ -15,7 +17,7 @@
   alphabet stolen from: https://ameya98.github.io/WebPPL/generative_art/
  */
 
-import { newStack, randomRange } from "../utils/misc";
+import { newStack, randomRange, weightedRand } from "../utils/misc";
 
 export default class Lsystem {
   constructor({
@@ -45,8 +47,7 @@ export default class Lsystem {
       this.rules.forEach((rule) => {
         if (curr === rule.condition && !found) {
           found = true;
-          const res =
-            rule.result[Math.round(randomRange(0, rule.result.length - 1))];
+          const res = weightedRand(rule.result);
           nextSentence += res;
         }
       });

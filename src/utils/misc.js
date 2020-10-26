@@ -14,6 +14,14 @@ function randomRange(min = 0, max = 1) {
   return Math.random() * (max - min) + min;
 }
 
+function weightedRand(items) {
+  let sum = 0;
+  for (const i in items) {
+    sum += items[i];
+    if (Math.random() <= sum) return i;
+  }
+}
+
 function vectorAdd(v1, v2) {
   return { x: v1.x + v2.x, y: v1.y + v2.y };
 }
@@ -32,5 +40,5 @@ function normalize(vector) {
 }
 
 export { newStack };
-export { randomRange };
+export { randomRange, weightedRand };
 export { vectorAdd, vectorDistance, vectorSubtract, normalize };
