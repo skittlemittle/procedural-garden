@@ -25,6 +25,7 @@ Procedurally generated plants.
 ## Credits:
 
 perlin noise: Joseph Gentle (https://github.com/josephg/noisejs)
+L system rules: https://ameya98.github.io/WebPPL/generative_art/
 
 ## License:
 

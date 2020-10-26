@@ -21,6 +21,7 @@ export default class Lsystem {
   constructor({
     axiom = "",
     rules = [],
+    shrink = 0.9,
     startLenRange = [100, 200],
     angleRange = [],
   }) {
@@ -28,6 +29,7 @@ export default class Lsystem {
     this.rules = rules;
     this.startLenRange = startLenRange;
     this.angleRange = angleRange;
+    this.shrink = shrink;
 
     this.stack = newStack();
     this.sentence = axiom;
@@ -69,7 +71,7 @@ export default class Lsystem {
         };
         this.tree.push({ ...branch });
         currBase = { ...branch };
-        len *= 0.9;
+        len *= this.shrink;
       } else if (curr === "L") {
         const leaf = {
           x1: prevBranch.x,

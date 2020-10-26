@@ -3,8 +3,8 @@
 import * as PIXI from "pixi.js";
 
 // import Branching from "./generators/Branching";
-import newOak from "./trees/oak";
-// import Lsystem from "./generators/L-system";
+// import newOak from "./trees/oak";
+import newAspen from "./trees/aspen";
 import Ground from "./ground";
 
 const WIDTH = 800;
@@ -25,27 +25,7 @@ document.body.appendChild(app.view);
 //   angleRange: { min: -(Math.PI / 4), max: Math.PI / 4 },
 // });
 
-// const Letree = new Lsystem({
-//   axiom: "X",
-//   rules: [
-//     {
-//       condition: "X",
-//       result: [
-//         "F+-+[[X[[L][+L][-L]]]--X[[L][++L][--L]]]-F[-F[[L][+L][-L]]]+X[[L][+L][-L]]",
-//       ],
-//     },
-//     {
-//       condition: "F",
-//       result: ["FF", "F"],
-//     },
-//     {
-//       condition: "L",
-//       result: ["[L[++L][--L]]", "L"],
-//     },
-//   ],
-//   startLenRange: [60, 80],
-//   angleRange: { min: (5 * Math.PI) / 36, max: Math.PI / 4 }, // 25 to 45 degrees lol
-// });
+
 
 ////////////////////////////
 const loader = PIXI.Loader.shared;
@@ -72,18 +52,21 @@ const graphics = new PIXI.Graphics();
 
 document.addEventListener("keydown", () => {
   graphics.clear();
-  graphics.lineStyle(3, 0x00cc7c, 1);
+  graphics.lineStyle(3, 0xcccc00, 1);
 
-  const { tree, leaves } = newOak({ x: WIDTH / 2, y: HEIGHT });
-  leaves.forEach((e) => graphics.drawCircle(e.x, e.y, 2));
+  const { tree, leaves } = newAspen({ x: WIDTH / 2, y: HEIGHT }, 40);
+  // leaves.forEach((e) => graphics.drawCircle(e.x, e.y, 2));
   // const { tree } = Letree.generate({ x: WIDTH / 2, y: HEIGHT });
-  // leaves.forEach((e) => {
-  //   graphics.moveTo(e.x1, e.y1);
-  //   graphics.lineTo(e.x2, e.y2);
-  // });
+  leaves.forEach((e) => {
+    graphics.moveTo(e.x1, e.y1);
+    graphics.lineTo(e.x2, e.y2);
+  });
 
-  const ground = new Ground([30, 100], 9)
-    .generate(87.6, WIDTH, HEIGHT - 150, 3, 0.4, 2);
+  const ground = new Ground([30, 100], 3, 0.4, 2, 9).generate(
+    150.6,
+    WIDTH,
+    HEIGHT - 150
+  );
 
   graphics.moveTo(0, HEIGHT - 150);
   ground.forEach((p) => graphics.lineTo(p.x, p.y));
