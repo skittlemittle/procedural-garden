@@ -1,12 +1,12 @@
 // perlin ground
-import * as Noise from "./utils/noise";
+import * as Noise from "../utils/noise";
 
 class Ground {
-  constructor(nRange, octaves, persistance, lacunarity, seed = Math.random()) {
-    this.nRange = nRange;
+  constructor(octaves, persistance, lacunarity, zoom, seed = Math.random()) {
     this.octaves = octaves;
     this.persistance = persistance;
     this.lacunarity = lacunarity;
+    this.zoom = zoom;
     Noise.seed(seed);
   }
 
@@ -17,8 +17,8 @@ class Ground {
     persistance: how much noise amplitude decreases each octave
     lacunarity: how much noise frequency increases each octave
   */
-  generate(scale, width, startY) {
-    const ground = [];
+  generate(width, nRange, startY) {
+    const ground = {};
     let xoff = 0;
 
     for (let x = 0; x <= width; x++) {
@@ -26,10 +26,9 @@ class Ground {
       let amplitude = 1;
       let noiseHeight = 0;
       for (let i = 0; i < this.octaves; i++) {
-        xoff = (x / scale) * frequency;
+        xoff = (x / this.zoom) * frequency;
         const perlinVal =
-          Noise.perlin(xoff) * (this.nRange.max - this.nRange.min) +
-          this.nRange.min;
+          Noise.perlin(xoff) * (nRange.max - nRange.min) + nRange.min;
         noiseHeight += perlinVal * amplitude;
 
         amplitude *= this.persistance;

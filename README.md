@@ -29,14 +29,14 @@ Procedurally generated plants.
 the list of chunks, chunk size: 100
 
 ```json
-[
-  {
+{
+  index: {
     biome: "biomename",
     ground: {},
     trees: [],
     shrubs: []
   }
-]
+}
 ```
 
 ---

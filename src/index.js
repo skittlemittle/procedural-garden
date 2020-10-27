@@ -1,10 +1,11 @@
 // le main scene
+// draws everything
+
 import * as PIXI from "pixi.js";
 
+import Trees from "./trees/trees";
 // import Branching from "./generators/Branching";
-// import newOak from "./trees/oak";
-import newAspen from "./trees/aspen";
-import Ground from "./ground";
+import Ground from "./terrain/ground";
 
 const WIDTH = 800;
 const HEIGHT = 800;
@@ -45,17 +46,15 @@ document.addEventListener("keydown", () => {
   graphics.clear();
   graphics.lineStyle(3, 0xcccc00, 1);
 
-  const ground = new Ground(
+  const ground = new Ground(3, 0.4, 2, zoom, Math.random()).generate(
+    WIDTH,
     { min: 30, max: 100 },
-    3,
-    0.4,
-    2,
-    Math.random()
-  ).generate(zoom, WIDTH, HEIGHT - 150);
+    HEIGHT - 150
+  );
   graphics.moveTo(0, HEIGHT - 150);
   for (const x in ground) graphics.lineTo(x * 1, ground[x]);
 
-  const { tree, leaves } = newAspen({ x: 310, y: ground[310] }, 40);
+  const { branches, leaves } = Trees["aspen"]({ x: 563, y: ground[563] }, 40);
   // leaves.forEach((e) => graphics.drawCircle(e.x, e.y, 2));
   leaves.forEach((e) => {
     graphics.moveTo(e.x1, e.y1);
@@ -64,7 +63,7 @@ document.addEventListener("keydown", () => {
 
   graphics.lineStyle(2, 0xffffff, 1);
   graphics.moveTo(WIDTH / 2, HEIGHT);
-  tree.forEach((element) => {
+  branches.forEach((element) => {
     graphics.moveTo(element.x1, element.y1);
     graphics.lineTo(element.x2, element.y2);
   });
