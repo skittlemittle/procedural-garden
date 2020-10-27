@@ -108,6 +108,6 @@ export default class Lsystem {
       this.sentence = this._makeSentence(this.sentence);
 
     this._traceBranches(root, this.sentence, bLen);
-    return { tree: this.tree, leaves: this.leaves };
+    return { branches: this.tree, leaves: this.leaves };
   }
 }

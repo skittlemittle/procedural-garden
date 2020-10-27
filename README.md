@@ -22,11 +22,30 @@ Procedurally generated plants.
 
 - [ ] particle effects
 
-## Credits:
+# "Documentation:"
+
+**Chunks:**
+
+the list of chunks, chunk size: 100
+
+```json
+[
+  {
+    biome: "biomename",
+    ground: {},
+    trees: [],
+    shrubs: []
+  }
+]
+```
+
+---
+
+# Credits:
 
 perlin noise: Joseph Gentle (https://github.com/josephg/noisejs)
 L system rules: https://ameya98.github.io/WebPPL/generative_art/
 
-## License:
+# License:
 
 MIT

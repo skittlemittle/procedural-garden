@@ -29,8 +29,8 @@ function newAspen(root = { x: 0, y: 0 }, height) {
   });
 
   const passes = 6;
-  const { tree, leaves } = Tree.generate({ ...root, passes });
-  return { tree, leaves };
+  const { branches, leaves } = Tree.generate({ ...root, passes });
+  return { branches, leaves };
 }
 
 export default newAspen;

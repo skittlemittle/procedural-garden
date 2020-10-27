@@ -39,8 +39,8 @@ function newOak(root = { x: 0, y: 0 }, height = 500) {
     center: { x: root.x, y: root.y - height },
     numLeaves: 200,
   });
-  const { tree, leaves } = Tree.generate(root);
-  return { tree, leaves };
+  const { branches, leaves } = Tree.generate(root);
+  return { branches, leaves };
 }
 
 export default newOak;

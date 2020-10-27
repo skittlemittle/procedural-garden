@@ -169,6 +169,6 @@ export default class SpaceColonization {
     }
 
     for (let i = 0; i < iterations; i++) this._grow();
-    return { tree: this.tree, leaves: this.leaves };
+    return { branches: this.tree, leaves: this.leaves };
   }
 }

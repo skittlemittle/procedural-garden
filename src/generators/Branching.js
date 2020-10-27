@@ -56,6 +56,6 @@ export default class Branching {
 
     this.tree.push({ x1: root.x, y1: root.y, x2: root.x, y2: root.y });
     this._branch(randomRange(minL, maxL), { x: root.x, y: root.y });
-    return { tree: this.tree };
+    return { branches: this.tree };
   }
 }
