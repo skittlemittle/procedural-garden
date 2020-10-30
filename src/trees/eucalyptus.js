@@ -1,7 +1,7 @@
 import Lsystem from "../generators/L-system";
 
 // tall "aspen"
-function newAspen(root = { x: 0, y: 0 }, height) {
+function newEucalyptus(root = { x: 0, y: 0 }, height) {
   const hRange = [height - 10, height + 20];
   // rules stolen from: https://ameya98.github.io/WebPPL/generative_art/
   // prettier-ignore
@@ -33,4 +33,4 @@ function newAspen(root = { x: 0, y: 0 }, height) {
   return { branches, leaves };
 }
 
-export default newAspen;
+export default newEucalyptus;

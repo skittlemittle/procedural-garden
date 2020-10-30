@@ -1,6 +1,6 @@
 // minecraff minecraff
 import { Polygon } from "pixi.js";
-import * as Noise from "../utils/noise";
+import Noise from "../utils/noise";
 import SpaceColonization from "../generators/Space-colonization";
 
 // returns a "noisy" ellipse
@@ -9,7 +9,8 @@ function makeCrownBlob(x0, y0, w, h, nRange) {
   const a = w / 2;
   let xoff, yoff;
   const path = [];
-  Noise.seed(Math.random());
+  const noise = new Noise();
+  noise.seed(Math.random());
   for (let theta = 0; theta < 2 * Math.PI; theta += 0.01) {
     xoff = Math.cos(theta) + 1;
     yoff = Math.sin(theta) + 1;
@@ -18,7 +19,7 @@ function makeCrownBlob(x0, y0, w, h, nRange) {
       (a * b) /
       Math.sqrt((b * Math.cos(theta)) ** 2 + (a * Math.sin(theta)) ** 2);
     const nR =
-      r + (Noise.perlin(xoff, yoff) * (nRange[1] - nRange[0]) + nRange[0]);
+      r + (noise.perlin(xoff, yoff) * (nRange[1] - nRange[0]) + nRange[0]);
     path.push({ x: x0 + nR * Math.cos(theta), y: y0 + nR * Math.sin(theta) });
   }
   return path;

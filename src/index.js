@@ -3,9 +3,7 @@
 
 import * as PIXI from "pixi.js";
 
-import Trees from "./trees/trees";
-// import Branching from "./generators/Branching";
-import Ground from "./terrain/ground";
+import World from "./terrain/makeWorld";
 
 const WIDTH = 800;
 const HEIGHT = 800;
@@ -41,32 +39,33 @@ function animate() {
 ////////////////////////////
 const graphics = new PIXI.Graphics();
 
+// ghetto drawing loop
 document.addEventListener("keydown", () => {
-  const zoom = 150.6;
+  const world = new World(5, Math.random());
+  const chunk = world.chunk("R", 0);
+  const ground = chunk.ground;
+  const trees = chunk.trees;
+
   graphics.clear();
-  graphics.lineStyle(3, 0xcccc00, 1);
+  graphics.lineStyle(3, 0x00cc00, 1);
 
-  const ground = new Ground(3, 0.4, 2, zoom, Math.random()).generate(
-    WIDTH,
-    { min: 30, max: 100 },
-    HEIGHT - 150
-  );
-  graphics.moveTo(0, HEIGHT - 150);
   for (const x in ground) graphics.lineTo(x * 1, ground[x]);
-
-  const { branches, leaves } = Trees["aspen"]({ x: 563, y: ground[563] }, 40);
   // leaves.forEach((e) => graphics.drawCircle(e.x, e.y, 2));
-  leaves.forEach((e) => {
-    graphics.moveTo(e.x1, e.y1);
-    graphics.lineTo(e.x2, e.y2);
-  });
+  for (const t of trees) {
+    const { branches, leaves } = t;
 
-  graphics.lineStyle(2, 0xffffff, 1);
-  graphics.moveTo(WIDTH / 2, HEIGHT);
-  branches.forEach((element) => {
-    graphics.moveTo(element.x1, element.y1);
-    graphics.lineTo(element.x2, element.y2);
-  });
+    graphics.lineStyle(3, 0xcccc00, 1);
+    leaves.forEach((e) => {
+      graphics.moveTo(e.x1, e.y1);
+      graphics.lineTo(e.x2, e.y2);
+    });
 
+    graphics.lineStyle(2, 0xffffff, 1);
+    graphics.moveTo(WIDTH / 2, HEIGHT);
+    branches.forEach((element) => {
+      graphics.moveTo(element.x1, element.y1);
+      graphics.lineTo(element.x2, element.y2);
+    });
+  }
   app.stage.addChild(graphics);
 });
