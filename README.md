@@ -18,9 +18,7 @@ Procedurally generated plants.
 
 - [ ] shrub generator
 
-- [ ] small plant generator
-
-- [ ] particle effects
+- [ ] particle effects?
 
 # "Documentation:"
 
@@ -30,11 +28,11 @@ the list of chunks, chunk size: 100
 
 ```json
 {
-  index: {
-    biome: "biomename",
-    ground: {},
-    trees: [],
-    shrubs: []
+  "index": {
+    "biome": "biomename",
+    "ground": {},
+    "trees": [],
+    "shrubs": []
   }
 }
 ```
@@ -44,6 +42,7 @@ the list of chunks, chunk size: 100
 # Credits:
 
 perlin noise: Joseph Gentle (https://github.com/josephg/noisejs)
+
 L system rules: https://ameya98.github.io/WebPPL/generative_art/
 
 # License:

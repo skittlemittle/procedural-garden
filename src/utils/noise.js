@@ -61,84 +61,114 @@ const p = [151,160,137,91,90,15,
   251,34,242,193,238,210,144,12,191,179,162,241, 81,51,145,235,249,14,239,107,
   49,192,214, 31,181,199,106,157,184, 84,204,176,115,121,50,45,127, 4,150,254,
   138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180];
-// To remove the need for index wrapping, double the permutation table length
-let perm = new Array(512);
-let gradP = new Array(512);
 
-// This isn't a very good seeding function, but it works ok. It supports 2^16
-// different seed values. Write something better if you need more seeds.
-function seed(seed) {
-  if (seed > 0 && seed < 1) {
-    // Scale the seed out
-    seed *= 65536;
+class PNoise {
+  constructor() {
+    // To remove the need for index wrapping, double the permutation table length
+    this.perm = new Array(512);
+    this.gradP = new Array(512);
+
+    this.seed(0);
   }
 
-  seed = Math.floor(seed);
-  if (seed < 256) {
-    seed |= seed << 8;
-  }
-
-  for (let i = 0; i < 256; i++) {
-    let v;
-    if (i & 1) {
-      v = p[i] ^ (seed & 255);
-    } else {
-      v = p[i] ^ ((seed >> 8) & 255);
+  // This isn't a very good seeding function, but it works ok. It supports 2^16
+  // different seed values. Write something better if you need more seeds.
+  seed(seed) {
+    if (seed > 0 && seed < 1) {
+      // Scale the seed out
+      seed *= 65536;
     }
 
-    perm[i] = perm[i + 256] = v;
-    gradP[i] = gradP[i + 256] = grad3[v % 12];
+    seed = Math.floor(seed);
+    if (seed < 256) {
+      seed |= seed << 8;
+    }
+
+    for (let i = 0; i < 256; i++) {
+      let v;
+      if (i & 1) {
+        v = p[i] ^ (seed & 255);
+      } else {
+        v = p[i] ^ ((seed >> 8) & 255);
+      }
+
+      this.perm[i] = this.perm[i + 256] = v;
+      this.gradP[i] = this.gradP[i + 256] = grad3[v % 12];
+    }
+  }
+
+  _fade(t) {
+    return t * t * t * (t * (t * 6 - 15) + 10);
+  }
+
+  _lerp(a, b, t) {
+    return (1 - t) * a + t * b;
+  }
+
+  perlin(x, y = 0, z = 0) {
+    // Find unit grid cell containing point
+    let X = Math.floor(x),
+      Y = Math.floor(y),
+      Z = Math.floor(z);
+    // Get relative xyz coordinates of point within that cell
+    x = x - X;
+    y = y - Y;
+    z = z - Z;
+    // Wrap the integer cells at 255 (smaller integer period can be introduced here)
+    X = X & 255;
+    Y = Y & 255;
+    Z = Z & 255;
+
+    // Calculate noise contributions from each of the eight corners
+    const n000 = this.gradP[X + this.perm[Y + this.perm[Z]]].dot3(x, y, z);
+    const n001 = this.gradP[X + this.perm[Y + this.perm[Z + 1]]].dot3(
+      x,
+      y,
+      z - 1
+    );
+    const n010 = this.gradP[X + this.perm[Y + 1 + this.perm[Z]]].dot3(
+      x,
+      y - 1,
+      z
+    );
+    const n011 = this.gradP[X + this.perm[Y + 1 + this.perm[Z + 1]]].dot3(
+      x,
+      y - 1,
+      z - 1
+    );
+    const n100 = this.gradP[X + 1 + this.perm[Y + this.perm[Z]]].dot3(
+      x - 1,
+      y,
+      z
+    );
+    const n101 = this.gradP[X + 1 + this.perm[Y + this.perm[Z + 1]]].dot3(
+      x - 1,
+      y,
+      z - 1
+    );
+    const n110 = this.gradP[X + 1 + this.perm[Y + 1 + this.perm[Z]]].dot3(
+      x - 1,
+      y - 1,
+      z
+    );
+    const n111 = this.gradP[X + 1 + this.perm[Y + 1 + this.perm[Z + 1]]].dot3(
+      x - 1,
+      y - 1,
+      z - 1
+    );
+
+    // Compute the fade curve value for x, y, z
+    const u = this._fade(x);
+    const v = this._fade(y);
+    const w = this._fade(z);
+
+    // Interpolate
+    return this._lerp(
+      this._lerp(this._lerp(n000, n100, u), this._lerp(n001, n101, u), w),
+      this._lerp(this._lerp(n010, n110, u), this._lerp(n011, n111, u), w),
+      v
+    );
   }
 }
-seed(0);
 
-function fade(t) {
-  return t * t * t * (t * (t * 6 - 15) + 10);
-}
-
-function lerp(a, b, t) {
-  return (1 - t) * a + t * b;
-}
-
-function perlin(x, y = 0, z = 0) {
-  // Find unit grid cell containing point
-  let X = Math.floor(x),
-    Y = Math.floor(y),
-    Z = Math.floor(z);
-  // Get relative xyz coordinates of point within that cell
-  x = x - X;
-  y = y - Y;
-  z = z - Z;
-  // Wrap the integer cells at 255 (smaller integer period can be introduced here)
-  X = X & 255;
-  Y = Y & 255;
-  Z = Z & 255;
-
-  // Calculate noise contributions from each of the eight corners
-  const n000 = gradP[X + perm[Y + perm[Z]]].dot3(x, y, z);
-  const n001 = gradP[X + perm[Y + perm[Z + 1]]].dot3(x, y, z - 1);
-  const n010 = gradP[X + perm[Y + 1 + perm[Z]]].dot3(x, y - 1, z);
-  const n011 = gradP[X + perm[Y + 1 + perm[Z + 1]]].dot3(x, y - 1, z - 1);
-  const n100 = gradP[X + 1 + perm[Y + perm[Z]]].dot3(x - 1, y, z);
-  const n101 = gradP[X + 1 + perm[Y + perm[Z + 1]]].dot3(x - 1, y, z - 1);
-  const n110 = gradP[X + 1 + perm[Y + 1 + perm[Z]]].dot3(x - 1, y - 1, z);
-  const n111 = gradP[X + 1 + perm[Y + 1 + perm[Z + 1]]].dot3(
-    x - 1,
-    y - 1,
-    z - 1
-  );
-
-  // Compute the fade curve value for x, y, z
-  const u = fade(x);
-  const v = fade(y);
-  const w = fade(z);
-
-  // Interpolate
-  return lerp(
-    lerp(lerp(n000, n100, u), lerp(n001, n101, u), w),
-    lerp(lerp(n010, n110, u), lerp(n011, n111, u), w),
-    v
-  );
-}
-
-export { perlin, seed };
+export default PNoise;
