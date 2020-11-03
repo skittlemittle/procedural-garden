@@ -1,16 +1,21 @@
 /*
  makes and connects chunks of the world
-
- returns:
- - ground
- - entities (trees, plants)
- - other shit?
+ 
+ chunks:
+ {
+   index: {
+     biome
+     ground
+     trees
+     shrubs
+   }
+ }
 */
 import Noise from "../utils/noise";
 import Ground from "./ground";
 import Biomes from "./biomes";
 import Trees from "../trees/trees";
-import { randomRange } from "../utils/misc";
+import { randomRange, weightedRand } from "../utils/misc";
 
 class World {
   constructor(generateDistance, seed) {
@@ -28,29 +33,29 @@ class World {
   // check if point is too close, stolen from sebastian lague
   _isValid(candidate, radius, positions, grid) {
     if (candidate >= 0 && candidate < this.chunksize) {
-      const cellX  = Math.round(candidate / radius);
+      const cellX = Math.round(candidate / radius);
       const searchStart = Math.max(0, cellX - 2);
       const searchEnd = Math.min(cellX + 2, grid.length - 1);
 
       for (let x = searchStart; x <= searchEnd; x++) {
         const pointIndex = grid[x] - 1;
         if (pointIndex != -1) {
-          const dist = Math.abs((candidate - positions[pointIndex]));
+          const dist = Math.abs(candidate - positions[pointIndex]);
           if (dist < radius) return false;
         }
       }
       return true;
     }
-    return false
+    return false;
   }
 
-  // just poission disc sampling in 1D with radii set by perlin noise
   // returns a list of tree positions
-  _scatterTrees(radius = 80, numSamples = 8) {
+  // just poission disc sampling in 1D with radii set by perlin noise
+  _scatterTrees(radius = 200, numSamples = 8) {
     const grid = new Array(Math.ceil(this.chunksize / radius));
     const positions = [];
     const spawnPts = [];
-    // init tree
+    // init point 
     spawnPts.push(0);
     while (spawnPts.length > 0) {
       const spawnIndex = Math.round(randomRange(0, spawnPts.length));
@@ -73,8 +78,9 @@ class World {
     return positions;
   }
 
-  // return a new chunk, direction: "L" or "R"
+  // make a new chunk, direction: "L" or "R"
   chunk(direction, index = 0) {
+    const currBiome = Biomes["hills"];
     const startY = 650;
     const ground = this.g.generate(
       this.chunksize,
@@ -85,10 +91,11 @@ class World {
     const trees = [];
     for (let pos of this._scatterTrees()) {
       pos = Math.round(pos);
-      trees.push(Trees["eucalyptus"]({ x: pos, y: ground[pos] }, 40));
+      const t = weightedRand(currBiome.trees);
+      trees.push(Trees[t]({ x: pos, y: ground[pos] }, 500));
     }
     this.chunks[index] = {
-      biome: Biomes["forrest"].name,
+      biome: currBiome.name,
       ground,
       trees,
       shrubs: null,

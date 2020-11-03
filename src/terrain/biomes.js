@@ -6,19 +6,19 @@
 const Biomes = {
   snow: {
     name: "snow",
-    trees: ["pine"],
+    trees: {"pine": 1},
   },
   forrest: {
     name: "forrest",
-    trees: ["oak"],
+    trees: {"oak": 1},
   },
   desert: {
     name: "desert",
-    trees: ["acacia"],
+    trees: {"acacia": 1},
   },
   hills: {
     name: "hills",
-    trees: ["aspen", "oak"],
+    trees: {"eucalyptus": 0.4, "oak": 0.6},
   },
 };
 

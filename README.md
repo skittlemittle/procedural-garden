@@ -20,11 +20,11 @@ Procedurally generated plants.
 
 - [ ] particle effects?
 
-# "Documentation:"
+# "Documentation":
 
 **Chunks:**
 
-the list of chunks, chunk size: 100
+the list of chunks
 
 ```json
 {

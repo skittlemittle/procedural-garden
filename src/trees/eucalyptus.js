@@ -1,8 +1,8 @@
+// idk what tree this looks like i just called it eucalyptus
 import Lsystem from "../generators/L-system";
 
-// tall "aspen"
 function newEucalyptus(root = { x: 0, y: 0 }, height) {
-  const hRange = [height - 10, height + 20];
+  const hRange = [height / 10, height / 10 + 20];
   // rules stolen from: https://ameya98.github.io/WebPPL/generative_art/
   // prettier-ignore
   const Tree = new Lsystem({
@@ -16,7 +16,7 @@ function newEucalyptus(root = { x: 0, y: 0 }, height) {
       },
       {
         condition: "F",
-        result: { "FF": 0.9, "F": 0.1 },
+        result: { "FF": 0.75, "F": 0.25 },
       },
       {
         condition: "L",

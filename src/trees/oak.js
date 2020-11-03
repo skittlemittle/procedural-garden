@@ -2,6 +2,7 @@
 import { Polygon } from "pixi.js";
 import Noise from "../utils/noise";
 import SpaceColonization from "../generators/Space-colonization";
+import { randomRange } from "../utils/misc";
 
 // returns a "noisy" ellipse
 function makeCrownBlob(x0, y0, w, h, nRange) {
@@ -26,17 +27,14 @@ function makeCrownBlob(x0, y0, w, h, nRange) {
 }
 
 function newOak(root = { x: 0, y: 0 }, height = 500) {
-  const lwidth = 400;
-  const lheight = 200;
-  const crown = makeCrownBlob(root.x, root.y - height, lwidth, lheight, [
-    150,
-    400,
-  ]);
+  const h = Math.round(randomRange(height / 2, height / 4));
+  const w = Math.round(randomRange(height / 2, height / 4));
+  const crown = makeCrownBlob(root.x, root.y - height, w, h, [100, 300]);
 
   const Tree = new SpaceColonization({
     poly: new Polygon(crown),
-    w: lwidth,
-    h: lheight,
+    w,
+    h,
     center: { x: root.x, y: root.y - height },
     numLeaves: 200,
   });
