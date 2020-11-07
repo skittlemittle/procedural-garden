@@ -1,7 +1,7 @@
 // idk what tree this looks like i just called it eucalyptus
-import Lsystem from "../generators/L-system";
+import Lsystem from "../generators/L_system";
 
-function newEucalyptus(root = { x: 0, y: 0 }, height) {
+function newEucalyptus(root = { x: 0, y: 0 }, height = 500) {
   const hRange = [height / 10, height / 10 + 20];
   // rules stolen from: https://ameya98.github.io/WebPPL/generative_art/
   // prettier-ignore

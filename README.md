@@ -10,16 +10,6 @@ Procedurally generated plants.
 
 - host `build/`
 
-# TODO
-
-- [ ] favicon
-
-- [ ] vine generator
-
-- [ ] shrub generator
-
-- [ ] particle effects?
-
 # "Documentation":
 
 **Chunks:**
