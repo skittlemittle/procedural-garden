@@ -1,6 +1,8 @@
 # Procedural Garden
 
-Procedurally generated plants.
+Procedurally generated forrests.
+
+![imag](https://raw.githubusercontent.com/skittlemittle/procedural-garden/main/scren.png)
 
 ---
 
