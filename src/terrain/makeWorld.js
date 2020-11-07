@@ -63,7 +63,7 @@ class World {
 
       let accepted = false;
       for (let i = 0; i < numSamples; i++) {
-        const dir = Math.round(randomRange(0, 1));
+        const dir = Math.round(randomRange(-1, 1));
         const candidate = spawnCenter + dir * randomRange(radius, 2 * radius);
         if (this._isValid(candidate, radius, positions, grid)) {
           positions.push(candidate);
@@ -80,17 +80,20 @@ class World {
 
   // make a new chunk, direction: "L" or "R"
   chunk(direction, index = 0) {
+    let startY = 650;
+    const startX = (direction == "R" ? 1 : -1) * this.chunksize * index;
     const currBiome = Biomes["hills"];
-    const startY = 650;
+    // const prevChunk = this.chunks[index + (direction == "R" ? -1 : 1)];
     const ground = this.g.generate(
       this.chunksize,
       { min: 30, max: 100 },
-      startY
+      startY,
+      startX
     );
 
     const trees = [];
     for (let pos of this._scatterTrees()) {
-      pos = Math.round(pos);
+      pos = Math.round(pos) + startX;
       const t = weightedRand(currBiome.trees);
       trees.push(Trees[t]({ x: pos, y: ground[pos] }));
     }

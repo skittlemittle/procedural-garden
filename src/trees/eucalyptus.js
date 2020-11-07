@@ -16,11 +16,11 @@ function newEucalyptus(root = { x: 0, y: 0 }, height = 500) {
       },
       {
         condition: "F",
-        result: { "FF": 0.75, "F": 0.25 },
+        result: { "FF": 0.70, "F": 0.30 },
       },
       {
         condition: "L",
-        result: { "[L[++L][--L]]": 0.5, "L": 0.5 },
+        result: { "[L[++L][--L]]": 0.6, "L": 0.4 },
       },
     ],
     shrink: 0.94,
