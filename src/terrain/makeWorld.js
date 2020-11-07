@@ -55,7 +55,7 @@ class World {
     const grid = new Array(Math.ceil(this.chunksize / radius));
     const positions = [];
     const spawnPts = [];
-    // init point 
+    // init point
     spawnPts.push(0);
     while (spawnPts.length > 0) {
       const spawnIndex = Math.round(randomRange(0, spawnPts.length));
@@ -92,7 +92,7 @@ class World {
     for (let pos of this._scatterTrees()) {
       pos = Math.round(pos);
       const t = weightedRand(currBiome.trees);
-      trees.push(Trees[t]({ x: pos, y: ground[pos] }, 500));
+      trees.push(Trees[t]({ x: pos, y: ground[pos] }));
     }
     this.chunks[index] = {
       biome: currBiome.name,
