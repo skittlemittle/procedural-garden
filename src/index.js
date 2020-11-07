@@ -50,15 +50,15 @@ document.addEventListener("keydown", () => {
   graphics.lineStyle(3, 0x00cc00, 1);
 
   for (const x in ground) graphics.lineTo(x * 1, ground[x]);
-  // leaves.forEach((e) => graphics.drawCircle(e.x, e.y, 2));
   for (const t of trees) {
     const { branches, leaves } = t;
 
     graphics.lineStyle(3, 0xcccc00, 1);
-    leaves.forEach((e) => {
-      graphics.moveTo(e.x1, e.y1);
-      graphics.lineTo(e.x2, e.y2);
-    });
+    leaves.forEach((e) => graphics.drawCircle(e.x, e.y, 2));
+    // leaves.forEach((e) => {
+    //   graphics.moveTo(e.x1, e.y1);
+    //   graphics.lineTo(e.x2, e.y2);
+    // });
 
     graphics.lineStyle(2, 0xffffff, 1);
     graphics.moveTo(WIDTH / 2, HEIGHT);

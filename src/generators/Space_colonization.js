@@ -2,7 +2,6 @@
 // makes a tree given a "leaf space" which is just a 2d shape
 
 import {
-  randomRange,
   vectorAdd,
   vectorDistance,
   vectorSubtract,
@@ -10,20 +9,7 @@ import {
 } from "../utils/misc";
 
 export default class SpaceColonization {
-  constructor(
-    leafBlob = {
-      poly: null,
-      w: -1,
-      h: -1,
-      center: { x: 0, y: 0 },
-      numLeaves: 300,
-    },
-    minDist = 20,
-    maxDist = 100,
-    branchLen = 10,
-    leafDensity = 0.5,
-  ) {
-    this.leafBlob = leafBlob;
+  constructor(minDist = 20, maxDist = 100, branchLen = 10, leafDensity = 0.5) {
     this.minDist = minDist;
     this.maxDist = maxDist;
     this.branchLen = branchLen;
@@ -55,19 +41,6 @@ export default class SpaceColonization {
 
   _addLeaf(pos, density = this.leafDensity) {
     if (Math.random() % 2 > density) this.leaves.push({ x: pos.x, y: pos.y });
-  }
-
-  // scatter attractors in a given "blob" polygon
-  _scatterAttractors({ poly, w, h, center, numAttractors = 300 }) {
-    const attractors = [];
-    for (let i = 0; i < numAttractors; i++) {
-      const leaf = {
-        x: randomRange(-w, w) + center.x,
-        y: randomRange(-h, h) + center.y,
-      };
-      if (poly.contains(leaf.x, leaf.y)) attractors.push(leaf);
-    }
-    return attractors;
   }
 
   // leaf attractors pull the closest branch towards themselves
@@ -132,14 +105,13 @@ export default class SpaceColonization {
   }
 
   /* ====Public methods==== */
-  generate(root = { x: 0, y: 0 }, iterations = 150) {
+  generate(root = { x: 0, y: 0 }, attractors, iterations = 150) {
     this.tree.length = 0;
     this._branches.length = 0;
     this.leaves.length = 0;
     this.attractors.length = 0;
 
     // make attractor cluster
-    const attractors = this._scatterAttractors(this.leafBlob);
     for (const a of attractors)
       this.attractors.push(this._newAttractor(a.x, a.y));
     // init branch

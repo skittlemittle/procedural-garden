@@ -3,6 +3,7 @@
  use the plant keys from src/trees/trees.js
 */
 
+// prettier-ignore
 const Biomes = {
   snow: {
     name: "snow",
@@ -18,7 +19,7 @@ const Biomes = {
   },
   hills: {
     name: "hills",
-    trees: {"eucalyptus": 0.4, "oak": 0.6},
+    trees: {"eucalyptus": 0.6, "flame": 0.4},
   },
 };
 
