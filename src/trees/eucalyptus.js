@@ -11,16 +11,18 @@ function newEucalyptus(root = { x: 0, y: 0 }, height = 500) {
       {
         condition: "X",
         result: {
-          "F+-+[[X[[L][+L][-L]]]--X[[L][++L][--L]]]-F[-F[[L][+L][-L]]]+X[[L][+L][-L]]": 1,
+          "F+-+[[X[[L][+L][-L]]]--X[[L][++L][--L]]]-F[-F[[L][+L][-L]]]+X[[L][+L][-L]]": {
+            weight: 1
+          },
         },
       },
       {
         condition: "F",
-        result: { "FF": 0.70, "F": 0.30 },
+        result: {"FF": { weight: 0.70 }, "F": { weight: 0.30 }},
       },
       {
         condition: "L",
-        result: { "[L[++L][--L]]": 0.6, "L": 0.4 },
+        result: {"[L[++L][--L]]": { weight: 0.6 }, "L": { weight: 0.4 }},
       },
     ],
     shrink: 0.94,

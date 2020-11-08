@@ -41,33 +41,41 @@ const graphics = new PIXI.Graphics();
 
 // ghetto drawing loop
 document.addEventListener("keydown", () => {
+  graphics.clear();
+
   const chunks = {};
   const world = new World(5, Math.random());
-  chunks[0] = world.chunk("R", 0);
+  for (let i = 0; i < 2; i++) {
+    chunks[i] = world.chunk("R", i);
 
-  const ground = chunks[0].ground;
-  const trees = chunks[0].trees;
+    const ground = chunks[i].ground;
+    const trees = chunks[i].trees;
 
-  graphics.clear();
-  graphics.lineStyle(3, 0x00cc00, 1);
+    graphics.lineStyle(3, 0x00cc00, 1);
 
-  for (const x in ground) graphics.lineTo(x * 1, ground[x]);
-  for (const t of trees) {
-    const { branches, leaves } = t;
+    let moved = false;
+    for (const x in ground) {
+      if (!moved) graphics.moveTo(x * 1, ground[x]);
+      graphics.lineTo(x * 1, ground[x]);
+      moved = true;
+    }
+    for (const t of trees) {
+      const { branches, leaves } = t;
 
-    graphics.lineStyle(3, 0xcccc00, 1);
-    // leaves.forEach((e) => graphics.drawCircle(e.x, e.y, 2));
-    leaves.forEach((e) => {
-      graphics.moveTo(e.x1, e.y1);
-      graphics.lineTo(e.x2, e.y2);
-    });
+      graphics.lineStyle(3, 0xcccc00, 1);
+      // leaves.forEach((e) => graphics.drawCircle(e.x, e.y, 2));
+      leaves.forEach((e) => {
+        graphics.moveTo(e.x1, e.y1);
+        graphics.lineTo(e.x2, e.y2);
+      });
 
-    graphics.lineStyle(2, 0xffffff, 1);
-    graphics.moveTo(WIDTH / 2, HEIGHT);
-    branches.forEach((element) => {
-      graphics.moveTo(element.x1, element.y1);
-      graphics.lineTo(element.x2, element.y2);
-    });
+      graphics.lineStyle(2, 0xffffff, 1);
+      graphics.moveTo(WIDTH / 2, HEIGHT);
+      branches.forEach((element) => {
+        graphics.moveTo(element.x1, element.y1);
+        graphics.lineTo(element.x2, element.y2);
+      });
+    }
   }
   app.stage.addChild(graphics);
 });

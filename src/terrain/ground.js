@@ -19,7 +19,7 @@ class Ground {
     lacunarity: how much noise frequency increases each octave
     offSet: scrolls the ground
   */
-  generate(width, nRange, startY, startX, offset = 0) {
+  generate(width, nRange, startY, startX) {
     const ground = {};
     let xoff = 0;
 
@@ -28,10 +28,9 @@ class Ground {
       let amplitude = 1;
       let noiseHeight = 0;
       for (let i = 0; i < this.octaves; i++) {
-        xoff = (x / this.zoom) * frequency;
+        xoff = ((x + startX) / this.zoom) * frequency;
         const perlinVal =
-          this.noise.perlin(xoff + offset) * (nRange.max - nRange.min) +
-          nRange.min;
+          this.noise.perlin(xoff) * (nRange.max - nRange.min) + nRange.min;
         noiseHeight += perlinVal * amplitude;
 
         amplitude *= this.persistance;

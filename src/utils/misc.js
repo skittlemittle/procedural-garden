@@ -14,10 +14,11 @@ function randomRange(min = 0, max = 1) {
   return Math.random() * (max - min) + min;
 }
 
+// items: {"name": {weight}}
 function weightedRand(items) {
   let sum = 0;
   for (const i in items) {
-    sum += items[i];
+    sum += items[i].weight;
     if (Math.random() <= sum) return i;
   }
 }

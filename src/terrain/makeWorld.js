@@ -1,5 +1,5 @@
 /*
- makes and connects chunks of the world
+ makes chunks of the world
  
  chunks:
  {
@@ -27,7 +27,7 @@ class World {
     this.tdNoise = new Noise();
     this.tdNoise.seed(seed);
     this.chunksize = 800;
-    this.chunks = {}; //coz negative indexes
+    this.chunks = {}; // coz negative indexes
   }
 
   // check if point is too close, stolen from sebastian lague
@@ -49,14 +49,18 @@ class World {
     return false;
   }
 
-  // returns a list of tree positions
-  // just poission disc sampling in 1D with radii set by perlin noise
-  _scatterTrees(radius = 200, numSamples = 8) {
-    const grid = new Array(Math.ceil(this.chunksize / radius));
+  /* scatters plants in the chunk. Just poission disc sampling in 1D
+   choices: selection of plants to scatter
+   spacing: distance to add to base radius
+   numSamples: possion samples
+  */
+  _scatterPlants(choices, ground, biome, startX, spacing = 50, numSamples = 8) {
+    const grid = new Array(Math.ceil(this.chunksize / spacing));
     const positions = [];
     const spawnPts = [];
+    const plants = [];
     // init point
-    spawnPts.push(0);
+    spawnPts.push(this.chunksize / 2);
     while (spawnPts.length > 0) {
       const spawnIndex = Math.round(randomRange(0, spawnPts.length));
       const spawnCenter = spawnPts[spawnIndex];
@@ -64,10 +68,19 @@ class World {
       let accepted = false;
       for (let i = 0; i < numSamples; i++) {
         const dir = Math.round(randomRange(-1, 1));
+        const p = weightedRand(choices);
+        const radius = biome.trees[p].radius + spacing;
         const candidate = spawnCenter + dir * randomRange(radius, 2 * radius);
         if (this._isValid(candidate, radius, positions, grid)) {
           positions.push(candidate);
           spawnPts.push(candidate);
+          const pos = Math.round(positions[positions.length - 1]) + startX;
+          plants.push(
+            Trees[p]({
+              x: pos,
+              y: ground[pos],
+            })
+          );
           grid[Math.round(candidate / radius)] = positions.length;
           accepted = true;
           break;
@@ -75,7 +88,7 @@ class World {
       }
       if (!accepted) spawnPts.splice(spawnIndex, 1);
     }
-    return positions;
+    return plants;
   }
 
   // make a new chunk, direction: "L" or "R"
@@ -91,12 +104,13 @@ class World {
       startX
     );
 
-    const trees = [];
-    for (let pos of this._scatterTrees()) {
-      pos = Math.round(pos) + startX;
-      const t = weightedRand(currBiome.trees);
-      trees.push(Trees[t]({ x: pos, y: ground[pos] }));
-    }
+    const trees = this._scatterPlants(
+      currBiome.trees,
+      ground,
+      currBiome,
+      startX
+    );
+
     this.chunks[index] = {
       biome: currBiome.name,
       ground,

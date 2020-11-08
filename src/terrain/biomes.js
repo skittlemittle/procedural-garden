@@ -7,19 +7,28 @@
 const Biomes = {
   snow: {
     name: "snow",
-    trees: {"pine": 1},
+    trees: {"pine": { weight: 1, radius: 100 }},
   },
   forrest: {
     name: "forrest",
-    trees: {"oak": 1},
+    trees: {"oak": { weight: 1, radius: 200 }},
   },
   desert: {
     name: "desert",
-    trees: {"acacia": 1},
+    trees: {"acacia": { weight: 1, radius: 200 }},
   },
   hills: {
     name: "hills",
-    trees: {"eucalyptus": 0.6, "flame": 0.4},
+    trees: {
+      "eucalyptus": {
+        weight: 0.6,
+        radius: 300
+      },
+      "flame": {
+        weight: 0.4,
+        radius: 600
+      }
+    },
   },
 };
 

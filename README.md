@@ -31,6 +31,14 @@ the list of chunks
 
 ---
 
+**Tree "API":**
+
+```js
+tree(root);
+```
+
+where `root` is a `{x, y}`
+
 # Credits:
 
 perlin noise: Joseph Gentle (https://github.com/josephg/noisejs)
