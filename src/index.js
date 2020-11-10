@@ -17,26 +17,26 @@ const app = new PIXI.Application({
 document.body.appendChild(app.view);
 
 ////////////////////////////
-const loader = PIXI.Loader.shared;
-loader.onComplete.add(loaded);
-loader.add("leef", "./assets/leaf.png");
-loader.load();
+// const loader = PIXI.Loader.shared;
+// loader.onComplete.add(loaded);
+// loader.add("leef", "./assets/leaf.png");
+// loader.load();
 
-let img;
-function loaded() {
-  const texture = loader.resources["leef"].texture;
-  img = new PIXI.Sprite(texture);
-  img.anchor.x = 0.5;
-  img.anchor.y = 0.5;
-  // app.stage.addChild(img);
-  app.ticker.add(animate);
-}
+// let img;
+// function loaded() {
+//   const texture = loader.resources["leef"].texture;
+//   img = new PIXI.Sprite(texture);
+//   img.anchor.x = 0.5;
+//   img.anchor.y = 0.5;
+//   // app.stage.addChild(img);
+//   app.ticker.add(animate);
+// }
 
-function animate() {
-  img.x = app.renderer.screen.width / 2;
-  img.y = app.renderer.screen.height / 2;
-}
-////////////////////////////
+// function animate() {
+//   img.x = app.renderer.screen.width / 2;
+//   img.y = app.renderer.screen.height / 2;
+// }
+// ////////////////////////////
 const graphics = new PIXI.Graphics();
 
 // ghetto drawing loop

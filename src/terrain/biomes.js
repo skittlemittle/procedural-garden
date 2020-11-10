@@ -8,14 +8,17 @@ const Biomes = {
   snow: {
     name: "snow",
     trees: {"pine": { weight: 1, radius: 100 }},
+    "groundVariance": { min: 30, max: 200 }
   },
-  forrest: {
-    name: "forrest",
-    trees: {"oak": { weight: 1, radius: 200 }},
+  plains: {
+    name: "plains",
+    trees: {"oak": { weight: 1, radius: 150 }},
+    "groundVariance": { min: 30, max: 100 }
   },
   desert: {
     name: "desert",
     trees: {"acacia": { weight: 1, radius: 200 }},
+    "groundVariance": { min: 30, max: 50 }
   },
   hills: {
     name: "hills",
@@ -29,6 +32,7 @@ const Biomes = {
         radius: 600
       }
     },
+    "groundVariance": { min: 30, max: 400 }
   },
 };
 

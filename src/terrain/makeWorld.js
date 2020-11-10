@@ -11,7 +11,6 @@
    }
  }
 */
-import Noise from "../utils/noise";
 import Ground from "./ground";
 import Biomes from "./biomes";
 import Trees from "../trees/trees";
@@ -23,9 +22,7 @@ class World {
     this.seed = seed;
 
     this.biomes = Biomes;
-    this.g = new Ground(3, 0.4, 2, 150.6, seed);
-    this.tdNoise = new Noise();
-    this.tdNoise.seed(seed);
+    this.ground = new Ground(4, 0.4, 2, 550, seed);
     this.chunksize = 800;
     this.chunks = {}; // coz negative indexes
   }
@@ -60,7 +57,7 @@ class World {
     const spawnPts = [];
     const plants = [];
     // init point
-    spawnPts.push(this.chunksize / 2);
+    spawnPts.push(0);
     while (spawnPts.length > 0) {
       const spawnIndex = Math.round(randomRange(0, spawnPts.length));
       const spawnCenter = spawnPts[spawnIndex];
@@ -94,12 +91,12 @@ class World {
   // make a new chunk, direction: "L" or "R"
   chunk(direction, index = 0) {
     let startY = 650;
-    const startX = (direction == "R" ? 1 : -1) * this.chunksize * index;
+    const startX = (direction === "R" ? 1 : -1) * this.chunksize * index;
     const currBiome = Biomes["hills"];
     // const prevChunk = this.chunks[index + (direction == "R" ? -1 : 1)];
-    const ground = this.g.generate(
+    const ground = this.ground.generate(
       this.chunksize,
-      { min: 30, max: 100 },
+      currBiome.groundVariance,
       startY,
       startX
     );
