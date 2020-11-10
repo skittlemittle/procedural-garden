@@ -12,7 +12,7 @@ const Biomes = {
   },
   plains: {
     name: "plains",
-    trees: {"oak": { weight: 1, radius: 150 }},
+    trees: {"oak": { weight: 1, radius: 200 }},
     "groundVariance": { min: 30, max: 100 }
   },
   desert: {

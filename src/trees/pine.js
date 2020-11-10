@@ -4,8 +4,6 @@ import { randomRange } from "../utils/misc";
 import makeCrownBlob from "../utils/crownBlob";
 import scatterAttractors from "../utils/scatterAttractors";
 
-const tree = new SpaceColonization();
-
 function newPine(root = { x: 0, y: 0 }, height = 500) {
   const h = Math.round(randomRange(height, height * 0.7));
   const w = Math.round(randomRange(height / 3, height / 4));
@@ -16,6 +14,7 @@ function newPine(root = { x: 0, y: 0 }, height = 500) {
     y: root.y - height,
   });
 
+  const tree = new SpaceColonization();
   return tree.generate(root, attractors);
 }
 

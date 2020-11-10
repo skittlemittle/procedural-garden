@@ -6,8 +6,6 @@ import SpaceColonization from "../generators/Space_colonization";
 import makeCrownBlob from "../utils/crownBlob";
 import scatterAttractors from "../utils/scatterAttractors";
 
-const tree = new SpaceColonization(20, 300);
-
 function newFlame(root = { x: 0, y: 0 }, height = 400) {
   const h = Math.round(randomRange(height * 0.8, height * 0.7));
   const w = Math.round(randomRange(height * 3, height * 2));
@@ -21,6 +19,7 @@ function newFlame(root = { x: 0, y: 0 }, height = 400) {
     500
   );
 
+  const tree = new SpaceColonization(20, 300);
   return tree.generate(root, attractors);
 }
 

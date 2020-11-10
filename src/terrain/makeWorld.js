@@ -51,11 +51,18 @@ class World {
    spacing: distance to add to base radius
    numSamples: possion samples
   */
-  _scatterPlants(choices, ground, biome, startX, spacing = 50, numSamples = 8) {
+  _scatterPlants(
+    choices,
+    ground,
+    biome,
+    startX,
+    spacing = 100,
+    numSamples = 8
+  ) {
     const grid = new Array(Math.ceil(this.chunksize / spacing));
     const positions = [];
     const spawnPts = [];
-    const plants = [];
+    const plants = new Array();
     // init point
     spawnPts.push(0);
     while (spawnPts.length > 0) {
@@ -66,12 +73,12 @@ class World {
       for (let i = 0; i < numSamples; i++) {
         const dir = Math.round(randomRange(-1, 1));
         const p = weightedRand(choices);
-        const radius = biome.trees[p].radius + spacing;
+        const radius = biome.trees[p].radius;
         const candidate = spawnCenter + dir * randomRange(radius, 2 * radius);
         if (this._isValid(candidate, radius, positions, grid)) {
           positions.push(candidate);
           spawnPts.push(candidate);
-          const pos = Math.round(positions[positions.length - 1]) + startX;
+          const pos = Math.round(candidate + startX);
           plants.push(
             Trees[p]({
               x: pos,

@@ -20,21 +20,13 @@
 import { newStack, randomRange, weightedRand } from "../utils/misc";
 
 export default class Lsystem {
-  constructor({
-    axiom = "",
-    rules = [],
-    shrink = 0.9,
-    startLenRange = [100, 200],
-    angleRange = [],
-  }) {
+  constructor({ axiom = "", rules = [], shrink = 0.9, angleRange = [] }) {
     this.axiom = axiom;
     this.rules = rules;
-    this.startLenRange = startLenRange;
     this.angleRange = angleRange;
     this.shrink = shrink;
 
     this.stack = newStack();
-    this.sentence = axiom;
     this.tree = []; // list of lines: {x1, y1, x2, y2}
     this.leaves = [];
   }
@@ -98,16 +90,15 @@ export default class Lsystem {
   }
 
   /* ====Public methods==== */
-  generate(root = { x: 0, y: 0 }, passes = 4) {
+  generate(root = { x: 0, y: 0 }, passes = 4, startLenRange) {
     this.tree.length = 0;
     this.leaves.length = 0;
-    this.sentence = this.axiom;
-    const bLen = randomRange(this.startLenRange[0], this.startLenRange[1]);
+    let sentence = this.axiom;
+    const bLen = randomRange(startLenRange[0], startLenRange[1]);
 
-    for (let i = 0; i < passes; i++)
-      this.sentence = this._makeSentence(this.sentence);
+    for (let i = 0; i < passes; i++) sentence = this._makeSentence(sentence);
 
-    this._traceBranches(root, this.sentence, bLen);
+    this._traceBranches(root, sentence, bLen);
     return { branches: this.tree, leaves: this.leaves };
   }
 }
