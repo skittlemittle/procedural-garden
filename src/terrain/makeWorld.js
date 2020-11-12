@@ -99,7 +99,7 @@ class World {
   chunk(direction, index = 0) {
     let startY = 650;
     const startX = (direction === "R" ? 1 : -1) * this.chunksize * index;
-    const currBiome = Biomes["hills"];
+    const currBiome = Biomes["plains"];
     // const prevChunk = this.chunks[index + (direction == "R" ? -1 : 1)];
     const ground = this.ground.generate(
       this.chunksize,
@@ -112,7 +112,8 @@ class World {
       currBiome.trees,
       ground,
       currBiome,
-      startX
+      startX,
+      100
     );
 
     this.chunks[index] = {

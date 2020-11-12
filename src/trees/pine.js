@@ -14,7 +14,7 @@ function newPine(root = { x: 0, y: 0 }, height = 500) {
     y: root.y - height,
   });
 
-  const tree = new SpaceColonization();
+  const tree = new SpaceColonization(height);
   return tree.generate(root, attractors);
 }
 

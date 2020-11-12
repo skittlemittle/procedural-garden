@@ -9,7 +9,7 @@ import {
 } from "../utils/misc";
 
 export default class SpaceColonization {
-  constructor(minDist = 20, maxDist = 100, branchLen = 10, leafDensity = 0.5) {
+  constructor(maxDist = 100, minDist = 20, branchLen = 10, leafDensity = 0.5) {
     this.minDist = minDist;
     this.maxDist = maxDist;
     this.branchLen = branchLen;
@@ -118,27 +118,6 @@ export default class SpaceColonization {
     const firstB = this._newBranch({ x: root.x, y: root.y }, { x: 0, y: -1 });
     this.tree.push(firstB.branch);
     this._branches.push(firstB);
-
-    // grow the beginning "trunk" straight up
-    let found = false;
-    let currB = firstB;
-    while (!found) {
-      for (const attractor of this.attractors) {
-        const dist = vectorDistance(
-          { x: currB.branch.x2, y: currB.branch.y2 },
-          attractor.pos
-        );
-        if (dist < this.maxDist) found = true;
-      }
-      if (!found) {
-        currB = this._newBranch(
-          { x: currB.branch.x2, y: currB.branch.y2 },
-          { x: 0, y: -1 }
-        );
-        this.tree.push(currB.branch);
-        this._branches.push(currB);
-      }
-    }
 
     for (let i = 0; i < iterations; i++) this._grow();
     return { branches: this.tree, leaves: this.leaves };

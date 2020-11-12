@@ -5,7 +5,7 @@ import { randomRange } from "../utils/misc";
 import makeCrownBlob from "../utils/crownBlob";
 import scatterAttractors from "../utils/scatterAttractors";
 
-function newOak(root = { x: 0, y: 0 }, height = 500) {
+function newOak(root = { x: 0, y: 0 }, height = 400) {
   const h = Math.round(randomRange(height / 2, height / 4));
   const w = Math.round(randomRange(h, h * 0.7));
 
@@ -15,7 +15,7 @@ function newOak(root = { x: 0, y: 0 }, height = 500) {
     y: root.y - height,
   });
 
-  const tree = new SpaceColonization();
+  const tree = new SpaceColonization(height);
   return tree.generate(root, attractors, 50);
 }
 

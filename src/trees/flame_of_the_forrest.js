@@ -19,7 +19,7 @@ function newFlame(root = { x: 0, y: 0 }, height = 400) {
     500
   );
 
-  const tree = new SpaceColonization(20, 300);
+  const tree = new SpaceColonization(height);
   return tree.generate(root, attractors);
 }
 
