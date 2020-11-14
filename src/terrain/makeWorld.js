@@ -1,19 +1,10 @@
 /*
  makes chunks of the world
- 
- chunks:
- {
-   index: {
-     biome
-     ground
-     trees
-     shrubs
-   }
- }
 */
 import Ground from "./ground";
 import Biomes from "./biomes";
 import Trees from "../trees/trees";
+import Noise from "../utils/noise";
 import { randomRange, weightedRand } from "../utils/misc";
 
 class World {
@@ -22,9 +13,12 @@ class World {
     this.seed = seed;
 
     this.biomes = Biomes;
-    this.ground = new Ground(4, 0.4, 2, 550, seed);
+    this.ground = new Ground(4, 0.4, 2, 550, seed); // mfw magic numbers!!!!
     this.chunksize = 800;
     this.chunks = {}; // coz negative indexes
+    this.noise = new Noise();
+    this.noise.seed(seed);
+    this.currBiome = Biomes["hills"];
   }
 
   // check if point is too close, stolen from sebastian lague
@@ -96,32 +90,42 @@ class World {
   }
 
   // make a new chunk, direction: "L" or "R"
-  chunk(direction, index = 0) {
-    let startY = 650;
-    const startX = (direction === "R" ? 1 : -1) * this.chunksize * index;
-    const currBiome = Biomes["plains"];
-    // const prevChunk = this.chunks[index + (direction == "R" ? -1 : 1)];
-    const ground = this.ground.generate(
-      this.chunksize,
-      currBiome.groundVariance,
-      startY,
-      startX
-    );
+  chunk(direction, index = 0, groundHeight = 650) {
+    const prevChunk = this.chunks[index + (direction == "R" ? -1 : 1)];
+    if (index !== 0) {
+      this.currBiome =
+        Biomes[weightedRand(Biomes[prevChunk.biome.name].nextBiomeCandidates)];
+    }
 
-    const trees = this._scatterPlants(
-      currBiome.trees,
-      ground,
-      currBiome,
-      startX,
-      100
-    );
+    if (!this.chunks[index]) {
+      const startX = (direction === "R" ? 1 : -1) * this.chunksize * index;
+      const ground = this.ground.generate(
+        this.chunksize,
+        this.currBiome.groundVariance,
+        groundHeight,
+        startX
+      );
 
-    this.chunks[index] = {
-      biome: currBiome.name,
-      ground,
-      trees,
-      shrubs: null,
-    };
+      const noiseOffset = index * Math.random();
+      const trees = this._scatterPlants(
+        this.currBiome.trees,
+        ground,
+        this.currBiome,
+        startX,
+        Math.abs(this.noise.perlin(noiseOffset)) * (100 - 30) + 30
+      );
+
+      this.chunks[index] = {
+        biome: {
+          name: this.currBiome.name,
+          groundColor: Biomes[this.currBiome.name].groundColor,
+        },
+        ground,
+        trees,
+        shrubs: null,
+      };
+    }
+
     return this.chunks[index];
   }
 }

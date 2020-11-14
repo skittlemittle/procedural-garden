@@ -12,16 +12,21 @@ Procedurally generated forrests.
 
 - host `build/`
 
-# "Documentation":
+# "Documentation:"
 
 **Chunks:**
 
 the list of chunks
 
+example:
+
 ```json
 {
   "index": {
-    "biome": "biomename",
+    "biome": {
+      "name": "hills",
+      "groundColor": 0x009933
+    },
     "ground": {},
     "trees": [],
     "shrubs": []
@@ -34,7 +39,7 @@ the list of chunks
 **Tree "API":**
 
 ```js
-tree(root);
+tree(root, height);
 ```
 
 where `root` is a `{x, y}`

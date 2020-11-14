@@ -7,21 +7,40 @@
 const Biomes = {
   snow: {
     name: "snow",
-    trees: {"pine": { weight: 1, radius: 100 }},
-    "groundVariance": { min: 30, max: 200 }
+    groundColor: 0xffffff,
+    trees: {"pine": { weight: 1, radius: 200 }},
+    groundVariance: { min: 30, max: 200 },
+    nextBiomeCandidates: {
+      "snow":   { weight: 0.5 },
+      "hills":  { weight: 0.3 },
+      "plains": { weight: 0.2 },
+    },
   },
   plains: {
     name: "plains",
-    trees: {"oak": { weight: 1, radius: 200 }},
-    "groundVariance": { min: 30, max: 100 }
+    groundColor: 0x33cc33,
+    trees: {"oak": { weight: 1, radius: 250 }},
+    groundVariance: { min: 30, max: 150 },
+    nextBiomeCandidates: {
+      "plains": { weight: 0.5 },
+      "hills":  { weight: 0.2 },
+      "desert": { weight: 0.1 },
+      "snow":   { weight: 0.2 },
+    },
   },
   desert: {
     name: "desert",
+    groundColor: 0xe2bf87,
     trees: {"acacia": { weight: 1, radius: 200 }},
-    "groundVariance": { min: 30, max: 50 }
+    groundVariance: { min: 30, max: 50 },
+    nextBiomeCandidates: {
+      "desert": { weight: 0.7 },
+      "hills":  { weight: 0.3 },
+    },
   },
   hills: {
     name: "hills",
+    groundColor: 0x009933,
     trees: {
       "eucalyptus": {
         weight: 0.6,
@@ -32,7 +51,12 @@ const Biomes = {
         radius: 600
       }
     },
-    "groundVariance": { min: 30, max: 400 }
+    groundVariance: { min: 30, max: 400 },
+    nextBiomeCandidates: {
+      "hills":  { weight: 0.7 },
+      "snow":   { weight: 0.2 },
+      "desert": { weight: 0.1 },
+    },
   },
 };
 

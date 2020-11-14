@@ -51,7 +51,7 @@ document.addEventListener("keydown", () => {
     const ground = chunks[i].ground;
     const trees = chunks[i].trees;
 
-    graphics.lineStyle(3, 0x00cc00, 1);
+    graphics.lineStyle(3, chunks[i].biome.groundColor, 1);
 
     let moved = false;
     for (const x in ground) {
