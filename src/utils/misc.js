@@ -10,6 +10,7 @@ const newStack = () => {
   };
 };
 
+/*============ random ============*/
 function randomRange(min = 0, max = 1) {
   return Math.random() * (max - min) + min;
 }
@@ -23,6 +24,7 @@ function weightedRand(items) {
   }
 }
 
+/*============ maffs ============*/
 function vectorAdd(v1, v2) {
   return { x: v1.x + v2.x, y: v1.y + v2.y };
 }
@@ -40,6 +42,11 @@ function normalize(vector) {
   if (len !== 0) return { x: vector.x / len, y: vector.y / len };
 }
 
+/* step range: 0 -> 1 */
+function lerp(from, to, step) {
+  return (1 - step) * from + step * to;
+}
+
 export { newStack };
 export { randomRange, weightedRand };
-export { vectorAdd, vectorDistance, vectorSubtract, normalize };
+export { vectorAdd, vectorDistance, vectorSubtract, normalize, lerp };

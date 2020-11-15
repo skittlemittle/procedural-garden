@@ -90,7 +90,7 @@ class World {
   }
 
   // make a new chunk, direction: "L" or "R"
-  chunk(direction, index = 0, groundHeight = 650) {
+  chunk(direction, index = 0, groundHeight = 580) {
     const prevChunk = this.chunks[index + (direction == "R" ? -1 : 1)];
     if (index !== 0) {
       this.currBiome =
@@ -102,6 +102,10 @@ class World {
       const ground = this.ground.generate(
         this.chunksize,
         this.currBiome.groundVariance,
+        // lord forgive me
+        prevChunk
+          ? Biomes[prevChunk.biome.name].groundVariance
+          : { min: 0, max: 0 },
         groundHeight,
         startX
       );

@@ -30,6 +30,7 @@ PERFORMANCE OF THIS SOFTWARE.
  *
  * modified by skittlemittle to only have 3d perlin noise
  */
+import { lerp } from "./misc";
 
 class Grad {
   constructor(x, y, z) {
@@ -101,10 +102,6 @@ class PNoise {
     return t * t * t * (t * (t * 6 - 15) + 10);
   }
 
-  _lerp(a, b, t) {
-    return (1 - t) * a + t * b;
-  }
-
   perlin(x, y = 0, z = 0) {
     // Find unit grid cell containing point
     let X = Math.floor(x),
@@ -163,9 +160,9 @@ class PNoise {
     const w = this._fade(z);
 
     // Interpolate
-    return this._lerp(
-      this._lerp(this._lerp(n000, n100, u), this._lerp(n001, n101, u), w),
-      this._lerp(this._lerp(n010, n110, u), this._lerp(n011, n111, u), w),
+    return lerp(
+      lerp(lerp(n000, n100, u), lerp(n001, n101, u), w),
+      lerp(lerp(n010, n110, u), lerp(n011, n111, u), w),
       v
     );
   }
