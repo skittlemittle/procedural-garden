@@ -20,7 +20,12 @@ function newFlame(root = { x: 0, y: 0 }, height = 400) {
   );
 
   const tree = new SpaceColonization(height);
-  return tree.generate(root, attractors);
+  return {
+    leafType: "point",
+    leafColor: 0x008000,
+    branchColor: 0x8b4513,
+    ...tree.generate(root, attractors),
+  };
 }
 
 export default newFlame;

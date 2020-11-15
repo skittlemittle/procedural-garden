@@ -16,37 +16,20 @@ const app = new PIXI.Application({
 });
 document.body.appendChild(app.view);
 
-////////////////////////////
-// const loader = PIXI.Loader.shared;
-// loader.onComplete.add(loaded);
-// loader.add("leef", "./assets/leaf.png");
-// loader.load();
-
-// let img;
-// function loaded() {
-//   const texture = loader.resources["leef"].texture;
-//   img = new PIXI.Sprite(texture);
-//   img.anchor.x = 0.5;
-//   img.anchor.y = 0.5;
-//   // app.stage.addChild(img);
-//   app.ticker.add(animate);
-// }
-
-// function animate() {
-//   img.x = app.renderer.screen.width / 2;
-//   img.y = app.renderer.screen.height / 2;
-// }
-// ////////////////////////////
-const graphics = new PIXI.Graphics();
-
 // ghetto drawing loop
 document.addEventListener("keydown", () => {
-  graphics.clear();
-
   const chunks = {};
   const world = new World(5, Math.random());
+
   for (let i = 0; i < 2; i++) {
+    // clean up trash
+    if (app.stage.children[i]) {
+      app.stage.removeChildAt(i).destroy({ children: true });
+    }
+
     chunks[i] = world.chunk("R", i);
+    // container mans innit
+    const graphics = new PIXI.Graphics();
 
     const ground = chunks[i].ground;
     const trees = chunks[i].trees;
@@ -60,22 +43,27 @@ document.addEventListener("keydown", () => {
       moved = true;
     }
     for (const t of trees) {
-      const { branches, leaves } = t;
-
-      graphics.lineStyle(3, 0xcccc00, 1);
-      // leaves.forEach((e) => graphics.drawCircle(e.x, e.y, 2));
-      leaves.forEach((e) => {
-        graphics.moveTo(e.x1, e.y1);
-        graphics.lineTo(e.x2, e.y2);
-      });
-
-      graphics.lineStyle(2, 0xffffff, 1);
-      graphics.moveTo(WIDTH / 2, HEIGHT);
-      branches.forEach((element) => {
-        graphics.moveTo(element.x1, element.y1);
-        graphics.lineTo(element.x2, element.y2);
-      });
+      drawTree(t, graphics);
     }
+
+    app.stage.addChildAt(graphics, i);
   }
-  app.stage.addChild(graphics);
 });
+
+function drawTree(t, graphics) {
+  graphics.lineStyle(4, t.leafColor, 1);
+  if (t.leafType === "point") {
+    t.leaves.forEach((l) => graphics.drawCircle(l.x, l.y, 2));
+  } else {
+    t.leaves.forEach((l) => {
+      graphics.moveTo(l.x1, l.y1);
+      graphics.lineTo(l.x2, l.y2);
+    });
+  }
+
+  graphics.lineStyle(3, t.branchColor, 1);
+  t.branches.forEach((b) => {
+    graphics.moveTo(b.x1, b.y1);
+    graphics.lineTo(b.x2, b.y2);
+  });
+}

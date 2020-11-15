@@ -31,7 +31,12 @@ function newEucalyptus(root = { x: 0, y: 0 }, height = 450) {
 
   const hRange = [height / 10, height / 10 + 20];
 
-  return Tree.generate(root, 4, hRange);
+  return {
+    leafType: "line",
+    leafColor: 0xcccc00,
+    branchColor: 0xffebcd,
+    ...Tree.generate(root, 4, hRange),
+  };
 }
 
 export default newEucalyptus;

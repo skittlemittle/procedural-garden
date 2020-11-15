@@ -1,7 +1,7 @@
 // minecraff minecraff
 import { Polygon } from "pixi.js";
-import SpaceColonization from "../generators/Space_colonization";
 import { randomRange } from "../utils/misc";
+import SpaceColonization from "../generators/Space_colonization";
 import makeCrownBlob from "../utils/crownBlob";
 import scatterAttractors from "../utils/scatterAttractors";
 
@@ -22,7 +22,12 @@ function newOak(root = { x: 0, y: 0 }, height = 400) {
   });
 
   const tree = new SpaceColonization(height);
-  return tree.generate(root, attractors, 50);
+  return {
+    leafType: "point",
+    leafColor: 0x1ca807,
+    branchColor: 0x3f301d,
+    ...tree.generate(root, attractors, 50),
+  };
 }
 
 export default newOak;

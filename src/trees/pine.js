@@ -15,7 +15,12 @@ function newPine(root = { x: 0, y: 0 }, height = 500) {
   });
 
   const tree = new SpaceColonization(height);
-  return tree.generate(root, attractors);
+  return {
+    leafType: "point",
+    leafColor: 0xcccc00,
+    branchColor: 0x221306,
+    ...tree.generate(root, attractors),
+  };
 }
 
 export default newPine;

@@ -39,10 +39,20 @@ example:
 **Tree "API":**
 
 ```js
-tree(root, height);
+tree((root = { x, y }), height);
 ```
 
-where `root` is a `{x, y}`
+generates the tree.
+
+returns:
+
+- leafColor: hex color code
+
+- branchColor: hex color code
+
+- branches: a list of lines
+
+- leaves: a list of lines or points
 
 # Credits:
 
