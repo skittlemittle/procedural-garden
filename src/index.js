@@ -1,8 +1,7 @@
 // le main scene
 // draws everything
-
 import * as PIXI from "pixi.js";
-
+import { Viewport } from "pixi-viewport";
 import World from "./terrain/makeWorld";
 
 const WIDTH = window.innerWidth;
@@ -16,41 +15,61 @@ const app = new PIXI.Application({
 });
 document.body.appendChild(app.view);
 
-// ghetto drawing loop
-document.addEventListener("keydown", () => {
-  const chunks = {};
-  const world = new World(5, Math.random());
-
-  for (let i = 0; i < 2; i++) {
-    // clean up trash
-    if (app.stage.children[i]) {
-      app.stage.removeChildAt(i).destroy({ children: true });
-    }
-
-    chunks[i] = world.chunk("R", i);
-    // container mans innit
-    const graphics = new PIXI.Graphics();
-
-    const ground = chunks[i].ground;
-    const trees = chunks[i].trees;
-
-    graphics.lineStyle(3, chunks[i].biome.groundColor, 1);
-
-    let moved = false;
-    for (const x in ground) {
-      if (!moved) graphics.moveTo(x * 1, ground[x]);
-      graphics.lineTo(x * 1, ground[x]);
-      moved = true;
-    }
-    for (const t of trees) {
-      drawTree(t, graphics);
-    }
-
-    app.stage.addChildAt(graphics, i);
-  }
+const camera = new Viewport({
+  screenWidth: window.innerWidth,
+  screenHeight: window.innerHeight,
+  worldWidth: 1000,
+  worldHeight: 1000,
+  interaction: app.renderer.plugins.interaction,
 });
+app.stage.addChild(camera);
+camera.drag().wheel();
 
-function drawTree(t, graphics) {
+const state = {
+  chunks: {},
+  world: null,
+};
+
+// draw chunks from start to stop
+function draw(start, stop) {
+  for (let i = start; i <= stop; i++) {
+    // clean up trash
+    if (camera.children[i] && i < start && i > stop) {
+      camera.removeChildAt(i).destroy({ children: true });
+      state.chunks[i] = false;
+    }
+
+    if (!state.chunks[i]) {
+      state.chunks[i] = state.world.chunk("R", i);
+      const graphics = new PIXI.Graphics();
+
+      const ground = state.chunks[i].ground;
+      const trees = state.chunks[i].trees;
+
+      graphics.lineStyle(3, state.chunks[i].biome.groundColor, 1);
+
+      let moved = false;
+      for (const x in ground) {
+        if (!moved) graphics.moveTo(x * 1, ground[x]);
+        graphics.lineTo(x * 1, ground[x]);
+        moved = true;
+      }
+      for (const t of trees) {
+        renderTree(t, graphics);
+      }
+
+      camera.addChildAt(graphics, i);
+    }
+  }
+}
+
+function renderTree(t, graphics) {
+  graphics.lineStyle(3, t.branchColor, 1);
+  t.branches.forEach((b) => {
+    graphics.moveTo(b.x1, b.y1);
+    graphics.lineTo(b.x2, b.y2);
+  });
+
   graphics.lineStyle(4, t.leafColor, 1);
   if (t.leafType === "point") {
     t.leaves.forEach((l) => graphics.drawCircle(l.x, l.y, 2));
@@ -60,10 +79,21 @@ function drawTree(t, graphics) {
       graphics.lineTo(l.x2, l.y2);
     });
   }
-
-  graphics.lineStyle(3, t.branchColor, 1);
-  t.branches.forEach((b) => {
-    graphics.moveTo(b.x1, b.y1);
-    graphics.lineTo(b.x2, b.y2);
-  });
 }
+
+/* event handling zone */
+camera.addListener("moved", (e) => {
+  const start = Math.floor(e.viewport.left / 800);
+  const stop = Math.floor(e.viewport.right / 800);
+  draw(start, stop);
+});
+
+document.addEventListener("keydown", () => {
+  state.world = new World(Math.random());
+  draw(0, 4);
+});
+
+window.onload = () => {
+  state.world = new World(Math.random());
+  draw(0, 2);
+};

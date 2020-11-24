@@ -8,8 +8,7 @@ import Noise from "../utils/noise";
 import { randomRange, weightedRand } from "../utils/misc";
 
 class World {
-  constructor(generateDistance, seed) {
-    this.generateDistance = generateDistance; // number of chunks
+  constructor(seed) {
     this.seed = seed;
 
     this.ground = new Ground(4, 0.4, 2, 550, seed); // mfw magic numbers!!!!
@@ -57,7 +56,7 @@ class World {
     const spawnPts = [];
     const plants = new Array();
     // init point
-    spawnPts.push(0);
+    spawnPts.push(this.chunksize / 2);
     while (spawnPts.length > 0) {
       const spawnIndex = Math.round(randomRange(0, spawnPts.length));
       const spawnCenter = spawnPts[spawnIndex];
@@ -91,7 +90,7 @@ class World {
   // make a new chunk, direction: "L" or "R"
   chunk(direction, index = 0, groundHeight = 580) {
     const prevChunk = this.chunks[index + (direction == "R" ? -1 : 1)];
-    if (index !== 0 && !this.chunks[index]) {
+    if (index !== 0 && !this.chunks[index] && prevChunk) {
       this.currBiome =
         Biomes[weightedRand(Biomes[prevChunk.biome.name].nextBiomeCandidates)];
     }
@@ -104,7 +103,7 @@ class World {
         // lord forgive me
         prevChunk
           ? Biomes[prevChunk.biome.name].groundVariance
-          : { min: 0, max: 0 },
+          : this.currBiome.groundVariance,
         groundHeight,
         startX
       );
@@ -125,7 +124,6 @@ class World {
         },
         ground,
         trees,
-        shrubs: null,
       };
     }
 

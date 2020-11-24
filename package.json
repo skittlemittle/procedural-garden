@@ -17,6 +17,7 @@
   "author": "skittlemittle",
   "license": "MIT",
   "dependencies": {
+    "pixi-viewport": "^4.17.1",
     "pixi.js": "^5.3.3"
   },
   "devDependencies": {
