@@ -40,7 +40,9 @@ function draw(start, stop) {
     }
 
     if (!state.chunks[i]) {
-      state.chunks[i] = state.world.chunk("R", i);
+      // only negative indexes are drawn from the left
+      const direction = start < 0 && i < 0 ? "L" : "R";
+      state.chunks[i] = state.world.chunk(direction, i);
       const graphics = new PIXI.Graphics();
 
       const ground = state.chunks[i].ground;
@@ -57,7 +59,6 @@ function draw(start, stop) {
       for (const t of trees) {
         renderTree(t, graphics);
       }
-
       camera.addChildAt(graphics, i);
     }
   }

@@ -28,8 +28,7 @@ example:
       "groundColor": 0x009933
     },
     "ground": {},
-    "trees": [],
-    "shrubs": []
+    "trees": []
   }
 }
 ```
