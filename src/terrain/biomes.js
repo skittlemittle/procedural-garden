@@ -24,18 +24,18 @@ const Biomes = {
     nextBiomeCandidates: {
       "plains": { weight: 0.5 },
       "hills":  { weight: 0.2 },
-      "desert": { weight: 0.1 },
-      "snow":   { weight: 0.2 },
+      "savannah": { weight: 0.2 },
     },
   },
-  desert: {
-    name: "desert",
+  savannah: {
+    name: "savannah",
     groundColor: 0xe2bf87,
-    trees: {"acacia": { weight: 1, radius: 200 }},
+    trees: {"acacia": { weight: 1, radius: 1000 }},
     groundVariance: { min: 30, max: 50 },
     nextBiomeCandidates: {
-      "desert": { weight: 0.7 },
+      "savannah": { weight: 0.6 },
       "hills":  { weight: 0.3 },
+      "snow": { weight: 0.1 }
     },
   },
   hills: {
@@ -55,7 +55,7 @@ const Biomes = {
     nextBiomeCandidates: {
       "hills":  { weight: 0.7 },
       "snow":   { weight: 0.2 },
-      "desert": { weight: 0.1 },
+      "savannah": { weight: 0.1 },
     },
   },
 };

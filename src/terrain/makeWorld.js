@@ -16,7 +16,7 @@ class World {
     this.chunks = {}; // coz negative indexes
     this.noise = new Noise();
     this.noise.seed(seed);
-    this.currBiome = Biomes["plains"];
+    this.currBiome = Biomes["savannah"];
   }
 
   // check if point is too close, stolen from sebastian lague
@@ -90,7 +90,7 @@ class World {
   // make a new chunk, direction: "L" or "R"
   chunk(direction, index = 0, groundHeight = 580) {
     const prevChunk = this.chunks[index + (direction == "R" ? -1 : 1)];
-    if (index !== 0 && !this.chunks[index] && prevChunk) {
+    if (prevChunk && !this.chunks[index]) {
       this.currBiome =
         Biomes[weightedRand(Biomes[prevChunk.biome.name].nextBiomeCandidates)];
     }
