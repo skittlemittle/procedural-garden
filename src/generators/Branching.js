@@ -7,12 +7,12 @@ export default class Branching {
       min: -(Math.PI / 6),
       max: Math.PI / 6,
     },
-    startLenRange = [100, 200],
+    startLen,
     minBranchSize = 20,
     bRange = [1, 4],
   }) {
     this.angleRange = angleRange;
-    this.startLenRange = startLenRange;
+    this.startLen = startLen;
     this.minBranchSize = minBranchSize;
     this.bRange = bRange;
 
@@ -49,13 +49,11 @@ export default class Branching {
 
   /* ====Public methods==== */
   generate(root = { x: 0, y: 0 }) {
-    const minL = this.startLenRange[0];
-    const maxL = this.startLenRange[1];
     this.tree.length = 0;
     this.prevAngle = 0;
 
     this.tree.push({ x1: root.x, y1: root.y, x2: root.x, y2: root.y });
-    this._branch(randomRange(minL, maxL), { x: root.x, y: root.y });
-    return { branches: this.tree };
+    this._branch(this.startLen, { x: root.x, y: root.y });
+    return { branches: this.tree, leaves: null };
   }
 }
