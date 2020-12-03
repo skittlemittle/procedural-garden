@@ -21,11 +21,15 @@ function newOak(root = { x: 0, y: 0 }, height = 400) {
     y: root.y - height,
   });
 
-  const tree = new SpaceColonization(height);
+  const tree = new SpaceColonization({
+    maxDist: height,
+    flowerDensity: 0.8,
+  });
   return {
     leafType: "point",
     leafColor: 0x1ca807,
     branchColor: 0x3f301d,
+    flowerColor: 0xff00ff,
     ...tree.generate(root, attractors, 50),
   };
 }

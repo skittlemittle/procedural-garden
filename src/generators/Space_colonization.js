@@ -9,15 +9,23 @@ import {
 } from "../utils/misc";
 
 export default class SpaceColonization {
-  constructor(maxDist = 100, minDist = 20, branchLen = 10, leafDensity = 0.5) {
+  constructor({
+    maxDist = 100,
+    minDist = 20,
+    flowerDensity = 1,
+    branchLen = 10,
+    leafDensity = 0.5,
+  }) {
     this.minDist = minDist;
     this.maxDist = maxDist;
     this.branchLen = branchLen;
     this.leafDensity = leafDensity;
+    this.flowerDensity = flowerDensity;
 
     this.attractors = [];
     this.tree = [];
     this.leaves = [];
+    this.flowers = [];
     this._branches = [];
   }
 
@@ -39,8 +47,12 @@ export default class SpaceColonization {
     };
   }
 
-  _addLeaf(pos, density = this.leafDensity) {
-    if (Math.random() % 2 > density) this.leaves.push({ x: pos.x, y: pos.y });
+  _addOrgan(pos) {
+    if (Math.random() % 2 > this.leafDensity) {
+      this.leaves.push({ x: pos.x, y: pos.y });
+    } else if (Math.random() % 2 > this.flowerDensity) {
+      this.flowers.push({ x: pos.x, y: pos.y });
+    }
   }
 
   // leaf attractors pull the closest branch towards themselves
@@ -76,8 +88,8 @@ export default class SpaceColonization {
     // cull attractors and add leaves
     for (let i = this.attractors.length - 1; i >= 0; i--) {
       if (this.attractors[i].reached) {
-        // random chance for a "reached" attractor to become a leaf
-        this._addLeaf({ ...this.attractors[i].pos });
+        // random chance for a "reached" attractor to become a leaf / flower
+        this._addOrgan({ ...this.attractors[i].pos });
         this.attractors.splice(i, 1);
       }
     }
@@ -120,6 +132,6 @@ export default class SpaceColonization {
     this._branches.push(firstB);
 
     for (let i = 0; i < iterations; i++) this._grow();
-    return { branches: this.tree, leaves: this.leaves };
+    return { branches: this.tree, leaves: this.leaves, flowers: this.flowers };
   }
 }

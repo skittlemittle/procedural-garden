@@ -26,25 +26,26 @@ app.stage.addChild(camera);
 camera.drag().wheel();
 
 const state = {
-  chunks: {},
+  chunks: null,
   world: null,
 };
 
 // draw chunks from start to stop
 function draw(start, stop) {
+  if (!state.chunks) state.chunks = {};
   for (let i = start; i <= stop; i++) {
     // clean up trash
     if (camera.children[i] && i < start && i > stop) {
-      camera.removeChildAt(i).destroy({ children: true });
-      state.chunks[i] = false;
+      camera.getChildByName(`${i}`).removeChild().destroy({ children: true });
+      state.chunks[i] = null;
     }
 
     if (!state.chunks[i]) {
-      // only negative indexes are drawn from the left
-      const direction = start < 0 && i < 0 ? "L" : "R";
-      state.chunks[i] = state.world.chunk(direction, i);
       const graphics = new PIXI.Graphics();
-
+      graphics.name = `${i}`; // cant have negative child indexes :(
+      // only negative indexes are drawn from the left
+      const direction = start < 0 ? "L" : "R";
+      state.chunks[i] = state.world.chunk(direction, i);
       const ground = state.chunks[i].ground;
       const trees = state.chunks[i].trees;
 
@@ -59,7 +60,7 @@ function draw(start, stop) {
       for (const t of trees) {
         renderTree(t, graphics);
       }
-      camera.addChildAt(graphics, i);
+      camera.addChild(graphics);
     }
   }
 }
@@ -71,6 +72,7 @@ function renderTree(t, graphics) {
     graphics.lineTo(b.x2, b.y2);
   });
 
+  if (!t.leaves) return;
   graphics.lineStyle(4, t.leafColor, 1);
   if (t.leafType === "point") {
     t.leaves.forEach((l) => graphics.drawCircle(l.x, l.y, 2));
@@ -80,6 +82,9 @@ function renderTree(t, graphics) {
       graphics.lineTo(l.x2, l.y2);
     });
   }
+  if (!t.flowers) return;
+  graphics.lineStyle(6, t.flowerColor, 1);
+  t.flowers.forEach((f) => graphics.drawCircle(f.x, f.y, 3));
 }
 
 /* event handling zone */
@@ -91,7 +96,14 @@ camera.addListener("moved", (e) => {
 
 document.addEventListener("keydown", () => {
   state.world = new World(Math.random());
-  draw(0, 4);
+  state.chunks = null;
+  camera.children.forEach((c) => {
+    c.destroy({ children: true });
+  });
+  camera.children.length = 0;
+  const start = Math.floor(camera.left / 800);
+  const stop = Math.floor(camera.right / 800);
+  draw(start, stop);
 });
 
 window.onload = () => {

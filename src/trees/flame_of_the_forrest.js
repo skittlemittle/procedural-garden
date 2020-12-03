@@ -16,14 +16,19 @@ function newFlame(root = { x: 0, y: 0 }, height = 500) {
     w,
     h,
     { x: root.x, y: root.y - height },
-    500
+    800
   );
 
-  const tree = new SpaceColonization(height);
+  const tree = new SpaceColonization({
+    maxDist: height,
+    flowerDensity: 0.3,
+    leafDensity: 0.5,
+  });
   return {
     leafType: "point",
     leafColor: 0x008000,
     branchColor: 0x8b4513,
+    flowerColor: 0xe74724,
     ...tree.generate(root, attractors),
   };
 }

@@ -17,7 +17,7 @@ function newAcacia(root = { x: 0, y: 0 }, height = 350) {
     400
   );
 
-  const tree = new SpaceColonization(height);
+  const tree = new SpaceColonization({ maxDist: height });
   return {
     leafType: "point",
     leafColor: 0x6b8e23,
