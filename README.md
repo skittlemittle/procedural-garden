@@ -2,7 +2,9 @@
 
 Procedurally generated forrests.
 
-![imag](https://raw.githubusercontent.com/skittlemittle/procedural-garden/main/scren.png)
+![imag](https://raw.githubusercontent.com/skittlemittle/procedural-garden/main/scren1.png)
+![imag](https://raw.githubusercontent.com/skittlemittle/procedural-garden/main/scren2.png)
+![imag](https://raw.githubusercontent.com/skittlemittle/procedural-garden/main/scren3.png)
 
 ---
 
